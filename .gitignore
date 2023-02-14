@@ -1,0 +1,11 @@
+__pycache__
+build
+images
+tools
+functions
+pyxel_resource
+memo.txt
+dq1save.json
+*.pyxapp
+deploy.sh
+serviceAccount.json

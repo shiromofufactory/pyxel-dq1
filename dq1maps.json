@@ -1,0 +1,588 @@
+[
+  {
+    "name": "field",
+    "kind": 0,
+    "map_no": 0,
+    "base_x": 0,
+    "base_y": 0,
+    "music": "dq1field",
+    "actors": [
+      { "x": 68, "y": 53, "chr": 17, "flag": 10 },
+      { "x": 87, "y": 117, "event": "find 26", "flag": 6 },
+      { "x": 77, "y": 104, "event": "battle 33", "flag": 7 }
+    ]
+  },
+  {
+    "name": "town1",
+    "kind": 1,
+    "map_no": 1,
+    "base_x": 8,
+    "base_y": 8,
+    "size": 30,
+    "music": "dq1town",
+    "actors": [
+      { "x": 1, "y": 13, "chr": 10, "event": "msg t11" },
+      { "x": 4, "y": 7, "chr": 8, "event": "msg t12" },
+      { "x": 13, "y": 3, "chr": 9, "movable": true, "event": "msg t13" },
+      { "x": 10, "y": 26, "chr": 4, "event": "msg t14" },
+      { "x": 28, "y": 28, "chr": 8, "movable": true, "event": "msg t15" },
+      { "x": 20, "y": 23, "chr": 10, "event": "msg t16" },
+      { "x": 16, "y": 19, "chr": 4, "movable": true, "event": "msg t17" },
+      { "x": 10, "y": 3, "chr": 7, "movable": true, "event": "msg t18" },
+      { "x": 20, "y": 10, "chr": 10, "event": "msg t19" },
+      { "x": 3, "y": 26, "chr": 6, "movable": true, "event": "msg t20" },
+      { "x": 5, "y": 4, "chr": 9, "event": "msg t13" },
+      { "x": 5, "y": 5, "event": "weapon 0,1,2,7,8,14" },
+      { "x": 9, "y": 21, "event": "inn 3" },
+      { "x": 10, "y": 21, "chr": 9 },
+      { "x": 21, "y": 5, "chr": 14, "through": true },
+      { "x": 22, "y": 24, "chr": 14, "through": true },
+      { "x": 21, "y": 6, "chr": 13, "door": 37 },
+      { "x": 5, "y": 23, "chr": 13, "door": 38 },
+      { "x": 24, "y": 10, "chr": 7, "event": "t22" }
+    ]
+  },
+  {
+    "name": "town1b",
+    "kind": 1,
+    "map_no": 4,
+    "base_x": 8,
+    "base_y": 8,
+    "size": 30,
+    "music": "dq1town",
+    "actors": [
+      { "x": 23, "y": 4, "event": "water 12" },
+      { "x": 24, "y": 4, "chr": 9 },
+      { "x": 24, "y": 25, "event": "tool 28,29,17" },
+      { "x": 25, "y": 25, "chr": 9 }
+    ]
+  },
+  {
+    "name": "town2",
+    "kind": 1,
+    "map_no": 1,
+    "base_x": 48,
+    "base_y": 8,
+    "size": 20,
+    "music": "dq1town",
+    "actors": [
+      { "x": 14, "y": 1, "chr": 7, "event": "msg t21" },
+      { "x": 2, "y": 10, "chr": 7, "event": "msg t22" },
+      { "x": 2, "y": 17, "chr": 7, "event": "msg t23" },
+      { "x": 11, "y": 12, "chr": 8, "movable": true, "event": "msg t24" },
+      { "x": 19, "y": 13, "chr": 10, "movable": true, "event": "msg t25" },
+      { "x": 5, "y": 11, "chr": 9 },
+      { "x": 4, "y": 11, "event": "tool 28,29,31,17" },
+      { "x": 10, "y": 18, "chr": 9 },
+      { "x": 10, "y": 17, "event": "weapon 1,2,3,8,9,15" },
+      { "x": 17, "y": 15, "chr": 9 },
+      { "x": 16, "y": 15, "event": "inn 3" },
+      { "x": 3, "y": 3, "chr": 14, "through": true },
+      { "x": 17, "y": 9, "chr": 14, "through": true },
+      { "x": 17, "y": 3, "chr": 14, "through": true },
+      { "x": 17, "y": 10, "chr": 13, "door": 31 }
+    ]
+  },
+  {
+    "name": "town2b",
+    "kind": 1,
+    "map_no": 4,
+    "base_x": 48,
+    "base_y": 8,
+    "size": 20,
+    "music": "dq1town",
+    "actors": [
+      { "x": 4, "y": 6, "chr": 13, "door": 39 },
+      { "x": 17, "y": 2, "chr": 15, "through": true },
+      { "x": 3, "y": 5, "chr": 4, "event": "msg t26" },
+      { "x": 5, "y": 5, "chr": 4, "event": "msg t27" }
+    ]
+  },
+  {
+    "name": "town3",
+    "kind": 1,
+    "map_no": 1,
+    "base_x": 8,
+    "base_y": 48,
+    "size": 30,
+    "music": "dq1town",
+    "actors": [
+      { "x": 23, "y": 13, "chr": 8, "movable": true, "event": "msg t38" },
+      { "x": 24, "y": 19, "chr": 3, "movable": true, "event": "msg t39" },
+      { "x": 7, "y": 18, "chr": 3, "movable": true, "event": "msg t40" },
+      { "x": 6, "y": 13, "chr": 7, "event": "msg t43" },
+      { "x": 18, "y": 25, "chr": 3, "event": "msg t44" },
+      { "x": 11, "y": 8, "chr": 10, "event": "msg t45" },
+      { "x": 29, "y": 0, "chr": 10, "event": "msg t46" },
+      { "x": 24, "y": 22, "chr": 6, "event": "t47" },
+      { "x": 16, "y": 18, "chr": 9 },
+      { "x": 17, "y": 18, "event": "inn 24" },
+      { "x": 23, "y": 7, "chr": 9 },
+      { "x": 23, "y": 8, "event": "weapon 2,3,4,10,11,12" },
+      { "x": 15, "y": 8, "chr": 9, "event": "tool 28,29,31" },
+      { "x": 3, "y": 5, "chr": 14, "through": true },
+      { "x": 4, "y": 4, "chr": 14, "through": true },
+      { "x": 5, "y": 3, "chr": 14, "through": true },
+      { "x": 10, "y": 20, "chr": 14, "through": true },
+      { "x": 11, "y": 20, "chr": 14, "through": true },
+      { "x": 22, "y": 23, "chr": 13, "door": 46 }
+    ]
+  },
+  {
+    "name": "town3b",
+    "kind": 1,
+    "map_no": 4,
+    "base_x": 8,
+    "base_y": 48,
+    "size": 30,
+    "music": "dq1town",
+    "actors": [
+      { "x": 4, "y": 7, "chr": 7 },
+      { "x": 4, "y": 6, "event": "lock 16" },
+      { "x": 3, "y": 23, "chr": 7 },
+      { "x": 4, "y": 23, "event": "msg t41" },
+      { "x": 9, "y": 24, "chr": 8, "movable": true, "event": "msg t42" }
+    ]
+  },
+  {
+    "name": "town4",
+    "kind": 1,
+    "map_no": 1,
+    "base_x": 8,
+    "base_y": 96,
+    "size": 20,
+    "music": "dq1dg1",
+    "background": "7",
+    "encount": "D",
+    "actors": [
+      { "x": 17, "y": 12, "event": "battle 34", "flag": 8 },
+      { "x": 18, "y": 12, "event": "find 13", "flag": 9 }
+    ]
+  },
+  {
+    "name": "town5",
+    "kind": 1,
+    "map_no": 1,
+    "base_x": 48,
+    "base_y": 96,
+    "size": 24,
+    "music": "dq1town",
+    "background": "5",
+    "actors": [
+      { "x": 19, "y": 19, "chr": 7, "movable": true, "event": "msg t28" },
+      { "x": 16, "y": 13, "chr": 10, "movable": true, "event": "msg t29" },
+      { "x": 9, "y": 15, "chr": 8, "event": "msg t30" },
+      { "x": 20, "y": 13, "chr": 6, "event": "msg t31" },
+      { "x": 12, "y": 1, "chr": 8, "event": "msg t32" },
+      { "x": 0, "y": 23, "chr": 9, "event": "msg t33" },
+      { "x": 1, "y": 23, "chr": 4, "event": "msg t34" },
+      { "x": 7, "y": 19, "chr": 10, "movable": true, "event": "msg t35" },
+      { "x": 2, "y": 12, "chr": 7, "movable": true, "event": "msg t36" },
+      { "x": 1, "y": 1, "chr": 7 },
+      { "x": 1, "y": 2, "event": "msg t37" },
+      { "x": 19, "y": 4, "chr": 9 },
+      { "x": 19, "y": 3, "event": "inn 12" },
+      { "x": 22, "y": 12, "chr": 9 },
+      { "x": 21, "y": 12, "event": "weapon 2,3,10,11,14" },
+      { "x": 14, "y": 21, "chr": 9 },
+      { "x": 13, "y": 21, "event": "tool 28,29,31,17" },
+      { "x": 1, "y": 15, "chr": 13, "door": 36 },
+      { "x": 9, "y": 7, "event": "find 21", "flag": 2 }
+    ]
+  },
+  {
+    "name": "town6",
+    "kind": 1,
+    "map_no": 1,
+    "base_x": 88,
+    "base_y": 8,
+    "size": 29,
+    "music": "dq1town",
+    "background": "4",
+    "actors": [
+      { "x": 14, "y": 5, "chr": 3, "movable": true, "event": "msg t48" },
+      { "x": 3, "y": 3, "chr": 3, "movable": true, "event": "msg t49" },
+      { "x": 23, "y": 9, "chr": 3, "movable": true, "event": "msg t50" },
+      { "x": 23, "y": 19, "chr": 9, "movable": true, "event": "msg t51" },
+      { "x": 1, "y": 11, "chr": 9 },
+      { "x": 2, "y": 11, "event": "msg t52" },
+      { "x": 3, "y": 25, "chr": 9 },
+      { "x": 4, "y": 25, "event": "msg t53" },
+      { "x": 7, "y": 18, "chr": 8, "movable": true, "event": "msg t54" },
+      { "x": 13, "y": 27, "chr": 7, "event": "msg t56" },
+      { "x": 7, "y": 2, "chr": 9 },
+      { "x": 7, "y": 3, "event": "inn 50" },
+      { "x": 21, "y": 4, "chr": 9 },
+      { "x": 20, "y": 4, "event": "weapon 0,1,2,7,9,15" },
+      { "x": 26, "y": 25, "chr": 9 },
+      { "x": 25, "y": 25, "event": "weapon 3,4,11,12" },
+      { "x": 23, "y": 11, "chr": 3 },
+      { "x": 24, "y": 11, "event": "weapon 5,16" },
+      { "x": 1, "y": 6, "chr": 10 },
+      { "x": 2, "y": 6, "event": "tool 28,29" },
+      { "x": 6, "y": 11, "chr": 9 },
+      { "x": 5, "y": 11, "event": "tool 31,17" },
+      { "x": 21, "y": 12, "chr": 8 },
+      { "x": 20, "y": 12, "event": "water 12" },
+      { "x": 21, "y": 21, "chr": 7 },
+      { "x": 21, "y": 22, "event": "t57" },
+      { "x": 26, "y": 5, "chr": 7 },
+      { "x": 26, "y": 6, "event": "lock 32" },
+      { "x": 1, "y": 1, "chr": 14, "through": true },
+      { "x": 26, "y": 1, "chr": 14, "through": true },
+      { "x": 10, "y": 10, "chr": 14, "through": true },
+      { "x": 10, "y": 13, "chr": 14, "through": true },
+      { "x": 10, "y": 14, "chr": 14, "through": true },
+      { "x": 10, "y": 15, "chr": 14, "through": true },
+      { "x": 10, "y": 16, "chr": 14, "through": true },
+      { "x": 10, "y": 17, "chr": 14, "through": true },
+      { "x": 10, "y": 18, "chr": 14, "through": true },
+      { "x": 10, "y": 19, "chr": 14, "through": true },
+      { "x": 10, "y": 20, "chr": 14, "through": true },
+      { "x": 10, "y": 21, "chr": 14, "through": true },
+      { "x": 10, "y": 22, "chr": 14, "through": true },
+      { "x": 12, "y": 22, "chr": 14, "through": true },
+      { "x": 14, "y": 10, "chr": 14, "through": true },
+      { "x": 15, "y": 10, "chr": 14, "through": true },
+      { "x": 16, "y": 10, "chr": 14, "through": true },
+      { "x": 17, "y": 10, "chr": 14, "through": true },
+      { "x": 17, "y": 11, "chr": 14, "through": true },
+      { "x": 17, "y": 12, "chr": 14, "through": true },
+      { "x": 17, "y": 13, "chr": 14, "through": true },
+      { "x": 17, "y": 14, "chr": 14, "through": true },
+      { "x": 17, "y": 15, "chr": 14, "through": true },
+      { "x": 17, "y": 16, "chr": 14, "through": true },
+      { "x": 17, "y": 20, "chr": 14, "through": true },
+      { "x": 17, "y": 21, "chr": 14, "through": true },
+      { "x": 15, "y": 22, "chr": 14, "through": true },
+      { "x": 17, "y": 22, "chr": 14, "through": true },
+      { "x": 3, "y": 20, "chr": 13, "door": 41 },
+      { "x": 13, "y": 24, "chr": 13, "door": 42 }
+    ]
+  },
+  {
+    "name": "town6b",
+    "kind": 1,
+    "map_no": 4,
+    "base_x": 88,
+    "base_y": 8,
+    "size": 29,
+    "music": "dq1town",
+    "actors": [{ "x": 14, "y": 16, "chr": 7, "event": "msg t55" }]
+  },
+  {
+    "name": "catsle1-1",
+    "kind": 1,
+    "map_no": 3,
+    "base_x": 56,
+    "base_y": 8,
+    "size": 10,
+    "music": "dq1catsle",
+    "background": "h",
+    "actors": [
+      { "x": 3, "y": 3, "chr": 2, "event": "c21" },
+      { "x": 6, "y": 3, "chr": 1, "event": "msg c22", "flag": 5 },
+      { "x": 3, "y": 6, "chr": 3, "event": "msg c23" },
+      { "x": 5, "y": 6, "chr": 3, "event": "msg c24" },
+      { "x": 8, "y": 5, "chr": 3, "event": "c25", "movable": true },
+      { "x": 4, "y": 7, "chr": 13, "door": 33 },
+      { "x": 4, "y": 4, "chr": 12, "event": "gold 120", "lock": 7 },
+      { "x": 5, "y": 4, "chr": 12, "event": "item 29", "lock": 8 },
+      { "x": 6, "y": 1, "chr": 12, "event": "item 32", "lock": 9 }
+    ]
+  },
+  {
+    "name": "catsle1-2",
+    "kind": 1,
+    "map_no": 3,
+    "base_x": 8,
+    "base_y": 8,
+    "size": 30,
+    "music": "dq1catsle",
+    "background": "3",
+    "actors": [
+      { "x": 8, "y": 6, "chr": 3, "event": "msg c26" },
+      { "x": 8, "y": 8, "chr": 3, "event": "msg c27" },
+      { "x": 15, "y": 20, "chr": 3, "event": "c28" },
+      { "x": 11, "y": 11, "chr": 8, "event": "c28", "movable": true },
+      { "x": 4, "y": 24, "chr": 9, "event": "msg c29", "movable": true },
+      { "x": 2, "y": 8, "chr": 10, "event": "msg c30" },
+      { "x": 2, "y": 12, "chr": 3, "event": "msg c31" },
+      { "x": 9, "y": 27, "chr": 3, "event": "msg c32" },
+      { "x": 12, "y": 27, "chr": 3, "event": "msg c32" },
+      { "x": 19, "y": 26, "event": "c33" },
+      { "x": 16, "y": 12, "chr": 7, "event": "msg c34", "movable": true },
+      { "x": 26, "y": 17, "chr": 3, "event": "msg c35" },
+      { "x": 22, "y": 21, "chr": 6, "event": "msg c36" },
+      { "x": 18, "y": 4, "chr": 3, "event": "msg c37", "movable": true },
+      { "x": 24, "y": 1, "chr": 7 },
+      { "x": 24, "y": 2, "event": "c38" },
+      { "x": 20, "y": 26, "chr": 7 },
+      { "x": 4, "y": 13, "chr": 13, "door": 34 },
+      { "x": 18, "y": 6, "chr": 13, "door": 35 },
+      { "x": 1, "y": 13, "chr": 12, "event": "gold 343", "lock": 10 },
+      { "x": 2, "y": 14, "chr": 12, "event": "item 32", "lock": 11 },
+      { "x": 1, "y": 15, "chr": 12, "event": "item 30", "lock": 12 },
+      { "x": 3, "y": 15, "chr": 12, "event": "item 15", "lock": 13 }
+    ]
+  },
+  {
+    "name": "catsle1-3",
+    "kind": 1,
+    "map_no": 3,
+    "base_x": 88,
+    "base_y": 8,
+    "size": 10,
+    "music": "dq1catsle",
+    "actors": [
+      { "x": 4, "y": 6, "chr": 7, "event": "msg c08", "lock": 14 },
+      { "x": 4, "y": 5, "chr": 12, "event": "item 24", "lock": 14 }
+    ]
+  },
+  {
+    "name": "catsle1-4",
+    "kind": 1,
+    "map_no": 3,
+    "base_x": 8,
+    "base_y": 48,
+    "size": 30,
+    "music": "dq1catsle",
+    "background": "3",
+    "actors": [
+      { "x": 10, "y": 7, "chr": 1, "flag": 13 },
+      { "x": 11, "y": 7, "chr": 2 },
+      { "x": 9, "y": 9, "chr": 4 },
+      { "x": 9, "y": 11, "chr": 4 },
+      { "x": 9, "y": 13, "chr": 4 },
+      { "x": 12, "y": 9, "chr": 4, "reverse": true },
+      { "x": 12, "y": 11, "chr": 4, "reverse": true },
+      { "x": 12, "y": 13, "chr": 4, "reverse": true }
+    ]
+  },
+  {
+    "name": "catsle2-1",
+    "kind": 1,
+    "map_no": 3,
+    "base_x": 48,
+    "base_y": 40,
+    "size": 10,
+    "music": "dq1catsle",
+    "actors": [
+      { "x": 4, "y": 4, "chr": 7, "event": "c10", "flag": 1 },
+      { "x": 3, "y": 4, "chr": 12, "event": "item 25", "lock": 20 }
+    ]
+  },
+  {
+    "name": "catsle3-1",
+    "kind": 1,
+    "map_no": 3,
+    "base_x": 72,
+    "base_y": 40,
+    "size": 10,
+    "music": "dq1catsle",
+    "actors": [{ "x": 4, "y": 5, "chr": 7, "event": "c12" }]
+  },
+  {
+    "name": "dg1-1",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 8,
+    "base_y": 8,
+    "music": "dq1dg1"
+  },
+  {
+    "name": "dg1-2",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 8,
+    "base_y": 32,
+    "music": "dq1dg2",
+    "actors": [
+      { "x": 9, "y": 3, "chr": 12, "event": "msg d01" },
+      { "x": 9, "y": 0, "chr": 12, "event": "gold 300", "lock": 1 }
+    ]
+  },
+  {
+    "name": "dg2-1",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 8,
+    "base_y": 56,
+    "music": "dq1dg1",
+    "actors": [{ "x": 13, "y": 5, "chr": 12, "event": "item 28", "lock": 2 }],
+    "encount": "13"
+  },
+  {
+    "name": "dg2-2",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 8,
+    "base_y": 80,
+    "music": "dq1dg2",
+    "actors": [
+      { "x": 2, "y": 2, "chr": 12, "event": "item 18", "lock": 3 },
+      { "x": 3, "y": 2, "chr": 12, "event": "item 29", "lock": 4 },
+      { "x": 1, "y": 6, "chr": 12, "event": "item 19", "lock": 5 },
+      { "x": 10, "y": 9, "chr": 12, "event": "gold 337", "lock": 6 }
+    ],
+    "encount": "E"
+  },
+  {
+    "name": "dg3-1",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 56,
+    "base_y": 80,
+    "music": "dq1dg1",
+    "actors": [
+      { "x": 5, "y": 22, "chr": 13, "door": 32 },
+      { "x": 5, "y": 21, "event": "battle 30", "flag": 3 },
+      { "x": 4, "y": 19, "chr": 1, "event": "d13", "flag": 4 }
+    ],
+    "encount": "13"
+  },
+  {
+    "name": "dg4-1",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 56,
+    "base_y": 8,
+    "music": "dq1dg1",
+    "actors": [
+      { "x": 17, "y": 17, "chr": 13, "door": 40 },
+      { "x": 11, "y": 0, "chr": 12, "event": "item 30", "lock": 15 },
+      { "x": 12, "y": 0, "chr": 12, "event": "gold 553", "lock": 16 },
+      { "x": 13, "y": 0, "chr": 12, "event": "item 32", "lock": 17 }
+    ],
+    "encount": "E"
+  },
+  {
+    "name": "dg4-2",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 56,
+    "base_y": 40,
+    "music": "dq1dg2",
+    "encount": "7"
+  },
+  {
+    "name": "dg4-3",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 88,
+    "base_y": 8,
+    "music": "dq1dg3",
+    "encount": "F",
+    "actors": [
+      { "x": 1, "y": 1, "chr": 12, "event": "item 20", "lock": 18 },
+      { "x": 13, "y": 6, "chr": 12, "event": "item 23", "lock": 19 }
+    ]
+  },
+  {
+    "name": "dg4-4",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 56,
+    "base_y": 64,
+    "music": "dq1dg4",
+    "encount": "F"
+  },
+  {
+    "name": "dg5-1",
+    "kind": 1,
+    "map_no": 2,
+    "base_x": 96,
+    "base_y": 48,
+    "music": "dq1dg1",
+    "size": 20,
+    "background": "2",
+    "encount": "10",
+    "actors": [
+      { "x": 10, "y": 3, "event": "msg d20", "through": true },
+      {
+        "x": 10,
+        "y": 1,
+        "chr": 18,
+        "flag": 11,
+        "event": "d21",
+        "through": true
+      },
+      { "x": 4, "y": 8, "chr": 13, "door": 43 },
+      { "x": 15, "y": 8, "chr": 13, "door": 44 }
+    ]
+  },
+  {
+    "name": "dg5-2",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 32,
+    "base_y": 8,
+    "music": "dq1dg2",
+    "encount": "10"
+  },
+  {
+    "name": "dg5-3",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 32,
+    "base_y": 32,
+    "music": "dq1dg3",
+    "encount": "11",
+    "actors": [{ "x": 5, "y": 5, "chr": 12, "event": "item 6", "lock": 21 }]
+  },
+  {
+    "name": "dg5-4",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 32,
+    "base_y": 56,
+    "music": "dq1dg4",
+    "encount": "11"
+  },
+  {
+    "name": "dg5-5",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 32,
+    "base_y": 80,
+    "music": "dq1dg5",
+    "encount": "11"
+  },
+  {
+    "name": "dg5-6",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 32,
+    "base_y": 104,
+    "music": "dq1dg6",
+    "encount": "12"
+  },
+  {
+    "name": "dg5-7",
+    "kind": 2,
+    "map_no": 2,
+    "base_x": 8,
+    "base_y": 104,
+    "music": "dq1dg7",
+    "encount": "12"
+  },
+  {
+    "name": "dg5-8",
+    "kind": 3,
+    "map_no": 2,
+    "base_x": 88,
+    "base_y": 88,
+    "music": "dq1dg8",
+    "size": 31,
+    "background": "0",
+    "encount": "12",
+    "actors": [
+      { "x": 11, "y": 11, "chr": 12, "event": "item 28", "lock": 22 },
+      { "x": 12, "y": 12, "chr": 12, "event": "item 31", "lock": 23 },
+      { "x": 11, "y": 13, "chr": 12, "event": "item 20", "lock": 24 },
+      { "x": 13, "y": 13, "chr": 12, "event": "item 28", "lock": 25 },
+      { "x": 17, "y": 12, "chr": 13, "door": 45 },
+      { "x": 16, "y": 24, "chr": 11, "event": "d19" }
+    ]
+  }
+]

@@ -1,0 +1,54 @@
+MAGIC_ARMOR = 12
+RT_ARMOR = 13
+FIGHTER_RING = 18
+DEATH_NECKLACE = 19
+CURSE_BELT = 20
+FLUTE = 21
+PRINCESS = 22
+HARP = 23
+SUN_STONE = 24
+RAIN_STAFF = 25
+RT_MARK = 26
+RAINBOW_DROP = 27
+HERB = 28
+TORCHLIGHT = 29
+HOLYWATER = 30
+WING = 31
+KEY = 32
+
+DRAGON = 30
+GOLEM = 33
+DEVIL_KNIGHT = 34
+DRAGON_LOAD = 39
+DRAGON_KING = 40
+
+HIM = 0
+GR = 1
+RRH = 2
+RMR = 3
+MHTN = 4
+RRMT = 5
+RR = 6
+THRS = 7
+BHIM = 8
+BGRM = 9
+
+EFFECT_RMR = 224
+EFFECT_THRS = 128
+EFFECT_TORCHLIGHT = 160
+EFFECT_HOLYWATER = 128
+
+NAME_TEXTS = [
+    "あいうえおかきくけこ",
+    "さしすせそたちつてと",
+    "なにぬねのはひふへほ",
+    "まみむめもやゆよわん",
+    "らりるれろっゃゅょー ",
+    "がぎぐげござじすぜぞ",
+    "だぢづでどばびぶべぼ",
+    "ぱぴぷぺぽ ",
+]
+
+SAVE_CODES = ["01234", "56789", ""]
+
+TRANSPARENT = 2
