@@ -8,4 +8,5 @@ memo.txt
 dq1save.json
 *.pyxapp
 deploy.sh
-serviceAccount.json
+.firebaserc
+.github

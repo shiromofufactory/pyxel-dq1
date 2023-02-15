@@ -1,40 +1,26 @@
-import pyxel as px
-import firebase_admin
-from firebase_admin import db, credentials
+import urllib.request
 import json
-import dq1util as util
 
-try:
-    cred = credentials.Certificate("./serviceAccount.json")
-except FileNotFoundError:
-    cred = credentials.Certificate()
-firebase_admin.initialize_app(
-    cred,
-    {
-        "databaseURL": "https://pyxel-dq1-default-rtdb.firebaseio.com/",
-        "databaseAuthVariableOverride": {"uid": "my-service-worker"},
-    },
-)
+# import dq1util as util
+
+url = "https://us-central1-pyxel-dq1.cloudfunctions.net/api"
 
 
 class Firebase:
     # 書き込み
-    def set(save_code, data):
-        with open("./dq1save.json", "w") as fout:
-            fout.write(json.dumps(data))
-        if save_code is None:
-            keys = db.reference().get(shallow=True)
-            while True:
-                save_code = f"{util.padding(px.rndi(0,999999),6,'0')}"
-                if not save_code in keys:
-                    break
-        db.reference(save_code).set(data)
-        return save_code
+    def set(save_code, save_data):
+        # with open("./dq1save.json", "w") as fout:
+        #    fout.write(json.dumps(data))
+        #    return "******"
+        data = {"id": save_code, "data": save_data}
+        headers = {"Content-Type": "application/json"}
+        req = urllib.request.Request(url, json.dumps(data).encode(), headers)
+        with urllib.request.urlopen(req) as res:
+            return res.read().decode("utf-8")
 
     # 読み込み
     def get(save_code):
-        # try:
-        #    data = util.load_json("dq1save")
-        # except FileNotFoundError:
-        #    return False
-        return db.reference(save_code).get()
+        # return util.load_json("dq1save")
+        req = urllib.request.Request(f"{url}?id={save_code}")
+        with urllib.request.urlopen(req) as res:
+            return json.loads(res.read())
