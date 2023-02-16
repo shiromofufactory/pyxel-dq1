@@ -57,6 +57,7 @@ class App:
         self.hp = 1  # ないとエラーになる
         self.save_code = None
         self.prev_code = None
+        self.password = None
         self.open_welcome()
         px.run(self.update, self.draw)
 
@@ -862,7 +863,7 @@ class App:
             if parm1:
                 if px.play_pos(0):
                     return False
-                self.save_code = self.save_data()
+                (self.save_code, self.password) = self.save_data()
                 self.talk(
                     f"セーブコードは {self.save_code} です。\nかならず メモをとるか\nスクリーンショットを とってください。"
                 )
@@ -1317,9 +1318,9 @@ class App:
             "prev_code": self.prev_code,
             "updated": str(datetime.datetime.utcnow() + datetime.timedelta(hours=9)),
         }
-        save_code = Http.set(self.save_code, data)
+        (save_code, password) = Http.set(self.save_code, self.password, data)
         Sounds.pause(False)
-        return save_code
+        return (save_code, password)
 
     # ロード
     def load_data(self):

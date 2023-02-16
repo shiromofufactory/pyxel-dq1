@@ -76,7 +76,6 @@ class Sounds:
 
     # 一時的に音を止める/再開（Web版バグ対策）
     def pause(is_pause):
-        print("pause:", is_pause, "on", px.frame_count)
         if is_pause:
             Sounds.tick = px.play_pos(0)[1]
             px.stop()
