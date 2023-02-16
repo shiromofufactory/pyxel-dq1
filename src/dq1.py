@@ -110,6 +110,8 @@ class App:
                 answer = btn["s"] and win.cur_y == 0
                 self.reserve(win.kind, answer, win.parm)
                 self.close_win("yn")
+                if win.kind == "save":
+                    Sounds.pause(True)  # サウンドバグ回避
         # ウェルカム画面（名前）
         elif "name" in self.windows:
             win = self.windows["name"].update_cursol(btn)
@@ -199,14 +201,8 @@ class App:
                 elif win.cur_x == 3 and win.cur_y == 2:
                     if len(code) >= 6:
                         self.prev_code = code
-                        map_name = self.load_data()
-                        if map_name:
-                            self.close_win()
-                            self.set_map(map_name, pl.x, pl.y)
-                        else:
-                            self.close_win("save_code")
-                            self.windows["welcome"].kind = []
-                            self.next_talk("セーブコードが まちがっています")
+                        Sounds.pause(True)
+                        self.reserve("load")
                 else:
                     letter = const.SAVE_CODES[win.cur_y][win.cur_x]
                     if len(parm) < 6:
@@ -565,7 +561,7 @@ class App:
             if self.equip_item(const.CURSE_BELT):  # 呪いのベルト効果
                 self.encount -= danger
             self.do_encount()
-            print(f"座標:{pl.x}, {pl.y} エンカウント値：{self.encount}")
+            # print(f"座標:{pl.x}, {pl.y} エンカウント値：{self.encount}")
 
     def draw(self):
         px.cls(0)
@@ -710,6 +706,15 @@ class App:
                 ]
             )
             self.gold = 0 if self.dispel_curse() else self.gold // 2  # のろいを強制解除
+        elif event == "load":  # ロード
+            map_name = self.load_data()
+            if map_name:
+                self.close_win()
+                self.set_map(map_name, pl.x, pl.y)
+            else:
+                self.close_win("save_code")
+                self.windows["welcome"].kind = []
+                self.next_talk("セーブコードが まちがっています")
         elif event == "dead":  # 死亡
             Battle.off()
             self.reset_game()
@@ -767,12 +772,12 @@ class App:
                     Sounds.bgm("dq1battle")
             spd_pl = int(self.speed * px.rndf(1.0, 2.0))
             spd_en = int(en["speed"] * px.rndf(0.0, 2.0))
-            print("敵のHP：", en["hp"])
-            print("すばやさ：", self.speed, "-", en["speed"])
+            # print("敵のHP：", en["hp"])
+            # print("すばやさ：", self.speed, "-", en["speed"])
             if spd_pl > spd_en:
                 self.battle_myturn()
                 surprise = int(1 + self.speed / en["speed"])
-                print("先制確率：", surprise, "/32")
+                # print("先制確率：", surprise, "/32")
                 if surprise > px.rndi(0, 31):
                     self.talk("てきはまだ こちらに きづいていない！")
                     en["surprised"] = True
@@ -1307,11 +1312,14 @@ class App:
             "prev_code": self.prev_code,
             "updated": str(datetime.datetime.utcnow() + datetime.timedelta(hours=9)),
         }
-        return Http.set(self.save_code, data)
+        save_code = Http.set(self.save_code, data)
+        Sounds.pause(False)
+        return save_code
 
     # ロード
     def load_data(self):
         data = Http.get(self.prev_code)
+        Sounds.pause(False)
         if not data:
             return None
         pl = self.player
@@ -2095,9 +2103,9 @@ class App:
             group = master["encountgroup"][idx]
             id = group[px.rndi(0, len(group) - 1)]
             en = master["enemies"][id]
-            print("候補モンスター：")
-            for tmp_id in group:
-                print(master["enemies"][tmp_id]["name"])
+            # print("候補モンスター：")
+            # for tmp_id in group:
+            #     print(master["enemies"][tmp_id]["name"])
             if (
                 Actor.cur_map.kind == 0
                 and (self.support["THRS"] or self.support["HOLYWATER"])
@@ -2224,7 +2232,7 @@ class App:
                     val = gm.calc_cure(action)
                     en["hp"] = min(en["hp"] + val, en["max_hp"])
                     self.talk(f"{en['name']}の キズが かいふくした！")
-                    print(en["hp"], "/", en["max_hp"])
+                    # print(en["hp"], "/", en["max_hp"])
                 elif action == "RRH":
                     if self.calc_special(action):
                         self.talk(f"%は ねむらされた！")
@@ -2379,11 +2387,9 @@ class App:
             and self.auto_settings["escape"] == 0
             and en["avoid_seal"] <= px.rndi(0, 15)
         )
-        print("dmg_max", dmg_max, "danger", danger, "allow_spell", allow_spell)
-        # rint("====== Auto  ======")
-        # rint("自分の最小ダメージ", blow_min, gr_min, bgrm_min)
-        # rint("敵のHP", en["hp"])
-        # rint("敵の最大ダメージ", dmg_max)
+        # print("自分の最小ダメージ", blow_min, gr_min, bgrm_min)
+        # print("敵のHP", en["hp"])
+        # print("敵の最大ダメージ", dmg_max)
         can_fairy = (not en["sleeping"]) and self.has_item(const.FLUTE)
         can_sleep = (
             (not en["sleeping"])
@@ -2438,8 +2444,8 @@ class App:
         selected = actions[px.rndi(0, len(actions) - 1)]
         health = en["hp"] / en["max_hp"]
         atc_ratio = self.atc / en["atc"]
-        # rint("敵の行動選択肢：", actions)
-        # rint("atc_ratio：", atc_ratio)
+        # print("敵の行動選択肢：", actions)
+        # print("atc_ratio：", atc_ratio)
         if self.equip_item(const.DEATH_NECKLACE):
             atc_ratio = 0  # しのくびかざり効果
         action = "blow"
@@ -2454,7 +2460,7 @@ class App:
                 Sounds.sound(7)
                 self.next_talk(f"{en['name']}は {spell['name']}の\nじゅもんを となえた！")
                 en["mp"] -= spell["mp"]
-                print("敵の残MP", en["mp"])
+                # print("敵の残MP", en["mp"])
                 action = selected
         elif selected in ["fire1", "fire2"]:  # ひのいき
             Sounds.sound(19)
@@ -2468,7 +2474,7 @@ class App:
         if action == "blow":
             self.next_talk(f"{en['name']}の こうげき！")
             Sounds.sound(11)
-        print(f"選択された行動 / 実際の行動：{selected} / {action}")
+        # print(f"選択された行動 / 実際の行動：{selected} / {action}")
         Battle.action = action
 
     # ダメージシミュレート（物理）
@@ -2498,9 +2504,9 @@ class App:
         dmg_min = int(dmg_base * 3 / 4)
         dmg_max = int(dmg_base + 1)
         tmp_rnd = px.rndi(0, 31)
-        print("会心率：", crt, "/32")
-        print("回避率：", avoid, "/32")
-        print("ダメージ最小 最大：", dmg_min, dmg_max)
+        # print("会心率：", crt, "/32")
+        # print("回避率：", avoid, "/32")
+        # print("ダメージ最小 最大：", dmg_min, dmg_max)
         if simulate:
             dmg_avg = (dmg_min + dmg_max) * (32 - avoid) / 64
             dmg_min = 0 if avoid > 0 else dmg_min
@@ -2559,7 +2565,7 @@ class App:
             dmg_min = 0 if avoid > 0 else dmg_min
             return (dmg_min, dmg_max, dmg_avg)
         else:
-            print("呪文回避率", avoid, "/32")
+            # print("呪文回避率", avoid, "/32")
             dmg = 0 if tmp_rnd < avoid else px.rndi(dmg_min, dmg_max)
             return dmg
 
@@ -2581,7 +2587,7 @@ class App:
                 self.is_sealed or self.equip_item(const.MAGIC_ARMOR)
             ):
                 avoid = 32
-        print("呪文回避率", avoid, "/32")
+        # print("呪文回避率", avoid, "/32")
         return px.rndi(0, 31) >= avoid
 
     # たたかう
@@ -2621,7 +2627,7 @@ class App:
             esc_rate = 32
         if en["disable_critical"]:
             esc_rate = 0  # りゅうおうからは逃げられない
-        print("逃走成功率", esc_rate, "/32")
+        # print("逃走成功率", esc_rate, "/32")
         return esc_rate
 
 

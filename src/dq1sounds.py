@@ -15,6 +15,7 @@ class Sounds:
         Sounds.cur_music = None
         Sounds.next_music = None
         Sounds.musics = {}
+        Sounds.tick = None
         path = "musics/"
         files = os.listdir(path)
         for file in files:
@@ -40,18 +41,22 @@ class Sounds:
                 Sounds.next_music = (
                     Sounds.cur_music if next_music is None else next_music
                 )
-            for ch, sound in enumerate(Sounds.musics[music]):
-                if sound is None or ch > 2:
-                    continue
-                px.sound(ch).set(
-                    sound["notes"],
-                    sound["tones"],
-                    sound["volumes"],
-                    sound["effects"],
-                    1,
-                )
-                px.play(ch, ch, loop=loop)
-        Sounds.cur_music = music
+            Sounds.cur_music = music
+            Sounds.play(loop)
+
+    # BGM再生
+    def play(loop=True, tick=None):
+        for ch, sound in enumerate(Sounds.musics[Sounds.cur_music]):
+            if sound is None or ch > 2:
+                continue
+            px.sound(ch).set(
+                sound["notes"],
+                sound["tones"],
+                sound["volumes"],
+                sound["effects"],
+                1,
+            )
+            px.play(ch, ch, loop=loop, tick=tick)
 
     # BGM同期待ち
     def wait(music, next_music=None):
@@ -69,3 +74,14 @@ class Sounds:
             if not is_dead:
                 Sounds.bgm(Sounds.next_music)
                 Sounds.next_music = None
+
+    # 一時的に音を止める/再開（Web版バグ対策）
+    def pause(is_pause):
+        print("pause:", is_pause, "on", px.frame_count)
+        if is_pause:
+            Sounds.tick = px.play_pos(0)[1]
+            # px.stop() だと動かない
+            for ch in [0, 1, 2, 3]:
+                px.play(ch, 63)
+        else:
+            Sounds.play(tick=Sounds.tick)
