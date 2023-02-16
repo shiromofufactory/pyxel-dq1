@@ -110,7 +110,7 @@ class App:
                 answer = btn["s"] and win.cur_y == 0
                 self.reserve(win.kind, answer, win.parm)
                 self.close_win("yn")
-                if win.kind == "save":
+                if win.kind == "save" and answer:
                     Sounds.pause(True)
         # ウェルカム画面（名前）
         elif "name" in self.windows:
@@ -455,7 +455,7 @@ class App:
                     self.use_item(const.HERB)
                 else:
                     self.cure_suggestion = False
-            elif len(self.reserves) == 0:
+            elif len(self.reserves) == 0 and talk_state < 0:
                 operable = True
                 if btn["s"]:  # メニューを開く
                     self.show_status()
@@ -699,8 +699,6 @@ class App:
         parm3 = self.reserves[0]["parm3"]
         pl = self.player
         if event == "reset":  # リセット
-            print(self.reserves)
-            print(Battle.on)
             self.talk(
                 [
                     f"＊「おお %よ\n  わるいゆめを みていたようじゃな。",
@@ -770,6 +768,7 @@ class App:
                 Sounds.bgm("dq1boss")
             else:
                 self.talk(en["name"] + "が あらわれた！")
+                Actor.cur_map.music_pos = px.play_pos(0)[1]
                 if Battle.is_boss:
                     Sounds.bgm("dq1encount", False, "dq1battle")
                 else:
@@ -860,9 +859,9 @@ class App:
             self.set_actors()
             self.consume_item(const.RAINBOW_DROP)
         elif event == "save":  # セーブ
-            if px.play_pos(0):
-                return False
             if parm1:
+                if px.play_pos(0):
+                    return False
                 self.save_code = self.save_data()
                 self.talk(
                     f"セーブコードは {self.save_code} です。\nかならず メモをとるか\nスクリーンショットを とってください。"
@@ -1524,7 +1523,7 @@ class App:
 
     # マップBGMを流す
     def map_bgm(self):
-        Sounds.bgm(Actor.cur_map.music)
+        Sounds.bgm(Actor.cur_map.music, tick=Actor.cur_map.music_pos)
 
     ### じゅもん関連 ###
 

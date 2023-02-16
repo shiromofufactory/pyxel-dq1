@@ -31,7 +31,7 @@ class Sounds:
             Sounds.next_music = next_music
 
     # BGM設定
-    def bgm(music, loop=True, next_music=None):
+    def bgm(music, loop=True, next_music=None, tick=None):
         if Sounds.nocut:
             Sounds.next_music = music
         elif Sounds.cur_music != music:
@@ -41,7 +41,7 @@ class Sounds:
                     Sounds.cur_music if next_music is None else next_music
                 )
             Sounds.cur_music = music
-            Sounds.play(loop)
+            Sounds.play(loop, tick)
 
     # BGM再生
     def play(loop=True, tick=None):

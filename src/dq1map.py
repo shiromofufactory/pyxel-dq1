@@ -14,6 +14,7 @@ class Map:
                 self.base_y = ms["base_y"]
                 self.size = ms["size"] if "size" in ms else None
                 self.music = ms["music"]
+                self.music_pos = 0
                 self.actors = ms["actors"] if "actors" in ms else []
                 self.encount = ms["encount"] if "encount" in ms else None
                 break
