@@ -95,7 +95,7 @@ class App:
         # エフェクトカウンタ更新
         Colors.update(btn["s"] or btn["a"])
         # 効果音/音楽→次の音楽
-        Sounds.resume(self.hp <= 0)
+        Sounds.resume()
         # フェード・強制音楽は操作を受け付けない
         if Fade.dist or Colors.flash or Sounds.waiting or talk_state == 0:
             return
@@ -111,7 +111,7 @@ class App:
                 self.reserve(win.kind, answer, win.parm)
                 self.close_win("yn")
                 if win.kind == "save":
-                    Sounds.pause(True)  # サウンドバグ回避
+                    Sounds.pause(True)
         # ウェルカム画面（名前）
         elif "name" in self.windows:
             win = self.windows["name"].update_cursol(btn)
@@ -698,6 +698,8 @@ class App:
         parm3 = self.reserves[0]["parm3"]
         pl = self.player
         if event == "reset":  # リセット
+            print(self.reserves)
+            print(Battle.on)
             self.talk(
                 [
                     f"＊「おお %よ\n  わるいゆめを みていたようじゃな。",
@@ -707,6 +709,8 @@ class App:
             )
             self.gold = 0 if self.dispel_curse() else self.gold // 2  # のろいを強制解除
         elif event == "load":  # ロード
+            if px.play_pos(0):
+                return False
             map_name = self.load_data()
             if map_name:
                 self.close_win()
@@ -741,7 +745,6 @@ class App:
                 self.set_encount()
                 self.reset_game(True)
                 self.close_win()
-                self.reserve("opening")
             else:
                 self.open_welcome()
         elif event == "opening":
@@ -856,6 +859,8 @@ class App:
             self.set_actors()
             self.consume_item(const.RAINBOW_DROP)
         elif event == "save":  # セーブ
+            if px.play_pos(0):
+                return False
             if parm1:
                 self.save_code = self.save_data()
                 self.talk(
