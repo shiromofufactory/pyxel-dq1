@@ -513,14 +513,14 @@ class App:
                     if self.support[key] == 0:
                         # トヘロス/レミーラ
                         if key in ["THRS", "RMR"]:
-                            if key == "THRS" and self.support["HOLYWATER"]:
-                                return
-                            if key == "RMR" and self.support["TORCHLIGHT"]:
-                                return
                             spell = gm.spell(key)
                             id = spell["id"]
                             texts = spell["name"] + "の こうかが なくなった。"
                             reusable = self.can_spell(id, True)
+                            if key == "THRS" and self.support["HOLYWATER"]:
+                                reusable = False
+                            if key == "RMR" and self.support["TORCHLIGHT"]:
+                                reusable = False
                             if reusable:
                                 texts += f"\nもういちど つかいますか？\nしょうひMP {spell['mp']}"
                             self.talk(texts)
@@ -529,23 +529,24 @@ class App:
                                 self.reserve("yn", "spell_yn", id)
                         # せいすい/たいまつ
                         if key in ["HOLYWATER", "TORCHLIGHT"]:
-                            if key == "HOLYWATER" and self.support["THRS"]:
-                                pass
-                            elif key == "TORCHLIGHT" and self.support["RMR"]:
-                                pass
+                            id = (
+                                const.HOLYWATER
+                                if key == "HOLYWATER"
+                                else const.TORCHLIGHT
+                            )
+                            texts = gm.item(id)["name"] + "の こうかが なくなった。"
+                            cnt = self.has_item(id)
+                            if key == "HOLYWATER":
+                                if self.support["THRS"] or Actor.cur_map.kind != 0:
+                                    cnt = 0
                             else:
-                                id = (
-                                    const.HOLYWATER
-                                    if key == "HOLYWATER"
-                                    else const.TORCHLIGHT
-                                )
-                                texts = gm.item(id)["name"] + "の こうかが なくなった。"
-                                cnt = self.has_item(id)
-                                if cnt > 0:
-                                    texts += f"\nもういちど つかいますか？\nのこり {cnt}こ"
-                                self.talk(texts)
-                                if cnt > 0:
-                                    self.reserve("yn", "item_yn", id)
+                                if self.support["RMR"] or Actor.cur_map.kind != 2:
+                                    cnt = 0
+                            if cnt > 0:
+                                texts += f"\nもういちど つかいますか？\nのこり {cnt}こ"
+                            self.talk(texts)
+                            if cnt > 0:
+                                self.reserve("yn", "item_yn", id)
                         return
             # エンカウント判定
             danger = 2
