@@ -12,7 +12,7 @@ from dq1battle import Battle
 from dq1grade import Grade
 from dq1map import Map
 from dq1window import Window
-from dq1firebase import Firebase
+from dq1http import Http
 
 
 master = util.load_json("dq1master")
@@ -1307,11 +1307,11 @@ class App:
             "prev_code": self.prev_code,
             "updated": str(datetime.datetime.utcnow() + datetime.timedelta(hours=9)),
         }
-        return Firebase.set(self.save_code, data)
+        return Http.set(self.save_code, data)
 
     # ロード
     def load_data(self):
-        data = Firebase.get(self.prev_code)
+        data = Http.get(self.prev_code)
         if not data:
             return None
         pl = self.player
