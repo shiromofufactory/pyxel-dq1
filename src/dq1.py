@@ -490,16 +490,18 @@ class App:
             pl.moved = False
             self.logs["steps"] += 1
             cell = map_cells[Actor.cur_map.map_no][pl.y][pl.x]
-            # 毒の沼地
+            # 毒の沼地、バリア
             if cell == "2":
                 self.poison(1, 14)
-            # バリア
             elif cell == "c":
                 self.poison(15, 20)
-            # ロトのよろいによる回復
+            # ロトのよろい、まほうのよろいによる回復
             if self.equip_item(const.RT_ARMOR):
                 self.add_hp(1, True)
-            if pl.overlap:  # イベント発動
+            if self.equip_item(const.MAGIC_ARMOR) and px.rndi(0, 3) == 0:
+                self.add_hp(1, True)
+            # イベント発動
+            if pl.overlap:
                 self.start_event(pl.overlap)
                 pl.overlap = None
                 return
@@ -2104,7 +2106,7 @@ class App:
         pl = self.player
         idx = None
         if Actor.cur_map.kind == 0:
-            idx = master["encountmap"][pl.y // 16][pl.x // 16]
+            idx = master["encountmap"][(pl.y - 1) // 16][(pl.x - 1) // 16]
         else:
             idx = Actor.cur_map.encount
         if not idx is None:

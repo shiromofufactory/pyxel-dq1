@@ -1285,7 +1285,7 @@
     {
       "id": 39,
       "name": "りゅうおう",
-      "hp": 200,
+      "hp": 180,
       "mp": 40,
       "atc": 107,
       "dfc": 110,
@@ -1298,7 +1298,7 @@
       "avoid_sleep": 32,
       "avoid_fairy": 32,
       "avoid_seal": 24,
-      "actions": ["blow", "MHTN", "BGRM", "BHIM"],
+      "actions": ["blow", "MHTN", "BGRM"],
       "img_no": 2,
       "img_x": 168,
       "img_y": 104,

@@ -2,6 +2,7 @@ import pyxel as px
 import dq1const as const
 import dq1util as util
 
+DEBUG_MODE = True
 ACTORS_UI = [
     (0, 5, 1, 5),  # 自分0
     (4, 5, 4, 5),  # 姫1
@@ -130,7 +131,7 @@ class Actor:
         nx = self.x + x
         ny = self.y + y
         cell = map_cells[Actor.cur_map.map_no][ny][nx]
-        blocked = cell in ["0", "1", "h", "i", "j", "k", "p", "q"]
+        blocked = cell in ["0", "1", "h", "i", "j", "k", "p", "q"] and not DEBUG_MODE
         for actor in Actor.actors:
             if (actor.x == nx and actor.y == ny) or (
                 actor.x + actor.dx == nx and actor.y + actor.dy == ny
