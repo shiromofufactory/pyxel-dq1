@@ -78,7 +78,8 @@ class Sounds:
     def pause(is_pause):
         if is_pause:
             Sounds.tick = px.play_pos(0)[1]
-            for ch in [0, 1, 2, 3]:
-                px.play(ch, 63, loop=False)  # これを入れないと違う音が鳴る？
+            # px.stop()
+            for ch in [0, 1, 2]:
+                px.play(ch, 63, loop=True)
         else:
             Sounds.play(tick=Sounds.tick)

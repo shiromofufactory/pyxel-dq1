@@ -709,7 +709,7 @@ class App:
             )
             self.gold = 0 if self.dispel_curse() else self.gold // 2  # のろいを強制解除
         elif event == "load":  # ロード
-            if px.play_pos(0):
+            if px.play_pos(3):
                 return False
             map_name = self.load_data()
             if map_name:
@@ -861,7 +861,7 @@ class App:
             self.consume_item(const.RAINBOW_DROP)
         elif event == "save":  # セーブ
             if parm1:
-                if px.play_pos(0):
+                if px.play_pos(3):
                     return False
                 (self.save_code, self.password) = self.save_data()
                 self.talk(
@@ -1039,7 +1039,7 @@ class App:
             )
         # 雨のほこら
         elif event == "c10":
-            if self.has_item(const.HARP) or 2 in self.flags:
+            if self.has_item(const.HARP) or 1 in self.flags:
                 self.talk(
                     [
                         "＊「おお %\n  たてごとを もってきたな。",
