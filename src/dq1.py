@@ -75,6 +75,7 @@ class App:
             "s": px.btnp(px.KEY_S, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_A, 6, 6),
             "a": px.btnp(px.KEY_A, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_B, 6, 6),
             "w": px.btnp(px.KEY_W, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_X, 6, 6),
+            "q": px.btnp(px.KEY_Q, 6, 6),
         }
         pressed = btn["s"] or btn["a"] or btn["u"] or btn["d"] or btn["r"] or btn["l"]
         talk_state = (
@@ -86,6 +87,11 @@ class App:
         # フレーム数計上
         if self.logs:
             self.logs["frames"] += 1
+        # デバッグ情報出力
+        if btn["q"]:
+            print("talk_state:", talk_state)
+            print("reserves:", self.reserves)
+            print("windows:", list(self.windows.keys()))
         # マップ切り替え
         if not self.visible:
             return self.change_map()
@@ -709,8 +715,6 @@ class App:
             )
             self.gold = 0 if self.dispel_curse() else self.gold // 2  # のろいを強制解除
         elif event == "load":  # ロード
-            if px.play_pos(3):
-                return False
             map_name = self.load_data()
             if map_name:
                 self.close_win()
@@ -861,8 +865,6 @@ class App:
             self.consume_item(const.RAINBOW_DROP)
         elif event == "save":  # セーブ
             if parm1:
-                if px.play_pos(3):
-                    return False
                 (self.save_code, self.password) = self.save_data()
                 self.talk(
                     f"セーブコードは {self.save_code} です。\nかならず メモをとるか\nスクリーンショットを とってください。"
@@ -1170,6 +1172,7 @@ class App:
                 self.flags.remove(13)
             self.visible = False
             self.wait = 20
+            (self.save_code, self.password) = self.save_data()
             self.set_map("catsle1-4", 18, 56, 4)
             self.reserve("finale_2")
         elif event == "finale_2":
@@ -1229,7 +1232,6 @@ class App:
             self.reserve("finale_8")
         elif event == "finale_8":
             self.is_ending = True
-            self.save_code = self.save_data()
             self.talk(f"さいごまで プレイしてくれて\nありがとう！\nセーブコード：{self.save_code}")
             self.reserve("finale_9")
         elif event == "finale_9":
