@@ -96,7 +96,7 @@ class App:
         if not self.visible:
             return self.change_map()
         # オートモード設定/解除（戦闘）
-        if Battle.on and btn["w"]:
+        if btn["w"] and Battle.on and Battle.state == 1:
             Battle.auto = not Battle.auto
             self.battle_switch_auto()
         # エフェクトカウンタ更新
@@ -2331,7 +2331,7 @@ class App:
     # オートモード切り替え
     def battle_switch_auto(self):
         if Battle.auto:
-            self.close_win("battle")
+            self.cmd_end(None)
             self.upsert_win("auto", 20, 0, 27, 2, ["オートバトル"])
         else:
             self.close_win("auto")
@@ -2616,7 +2616,7 @@ class App:
     def cmd_end(self, action):
         if not Battle.action:
             Battle.action = action
-        self.close_win(["battle", "spells", "items", "item_guide"])
+        self.close_win(["battle", "spells", "spells_guide", "items", "item_guide"])
 
     # 眠っているか
     @property
