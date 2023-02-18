@@ -791,7 +791,7 @@ class App:
                 self.battle_myturn()
                 surprise = int(1 + self.speed / en["speed"])
                 # print("先制確率：", surprise, "/32")
-                if surprise > px.rndi(0, 31):
+                if surprise > px.rndi(0, 31) and not Battle.is_boss:
                     self.talk("てきはまだ こちらに きづいていない！")
                     en["surprised"] = True
             else:
@@ -1177,7 +1177,12 @@ class App:
                 self.flags.remove(13)
             self.visible = False
             self.wait = 20
-            (self.save_code, self.password) = self.save_data()
+            self.flags.append(14)
+            self.close_win()
+            Sounds.pause(True)
+            (self.save_code, self.password) = self.save_data(False)
+            self.reserve("finale_1b")
+        elif event == "finale_1b":
             self.set_map("catsle1-4", 18, 56, 4)
             self.reserve("finale_2")
         elif event == "finale_2":
@@ -1295,10 +1300,10 @@ class App:
         self.reserve("opening" if is_opening else "reset")
 
     # セーブ
-    def save_data(self):
+    def save_data(self, play=True):
         pl = self.player
         data = {
-            "map": Actor.cur_map.name,
+            "map": Actor.cur_map.name if Actor.cur_map else None,
             "x": pl.x,
             "y": pl.y,
             "name": self.name,
@@ -1326,7 +1331,8 @@ class App:
             "updated": str(datetime.datetime.utcnow() + datetime.timedelta(hours=9)),
         }
         (save_code, password) = Http.set(self.save_code, self.password, data)
-        Sounds.pause(False)
+        if play:
+            Sounds.pause(False)
         return (save_code, password)
 
     # ロード
@@ -1358,12 +1364,13 @@ class App:
         self.auto_settings = data["auto_settings"]
         self.logs = data["logs"]
         self.logs["loaded"] += 1
-        restart_map = data["map"]
-        if 12 in self.flags:  # エンディング後再開
-            self.flags.remove(12)
+        if 14 in self.flags:  # エンディング後再開
+            self.flags.remove(14)
             pl.x = 47
             pl.y = 46
             restart_map = "field"
+        else:
+            restart_map = data["map"]
         while len(self.equips) < 4:
             self.equips.append(None)
         return restart_map

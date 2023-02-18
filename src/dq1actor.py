@@ -2,7 +2,7 @@ import pyxel as px
 import dq1const as const
 import dq1util as util
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 ACTORS_UI = [
     (0, 5, 1, 5),  # 自分0
     (4, 5, 4, 5),  # 姫1

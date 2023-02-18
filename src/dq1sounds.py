@@ -45,6 +45,7 @@ class Sounds:
 
     # BGM再生
     def play(loop=True, tick=None):
+        print("play", Sounds.cur_music)
         for ch, sound in enumerate(Sounds.musics[Sounds.cur_music]):
             if sound is None or ch > 2:
                 continue
@@ -68,7 +69,6 @@ class Sounds:
     # 止まっていた曲を再生
     def resume():
         if Sounds.next_music and px.play_pos(0) is None and px.play_pos(3) is None:
-            print("resume", Sounds.next_music)
             Sounds.nocut = False
             Sounds.waiting = False
             Sounds.bgm(Sounds.next_music)
@@ -77,8 +77,8 @@ class Sounds:
     # 一時的に音を止める/再開（Web版バグ対策）
     def pause(is_pause):
         if is_pause:
-            Sounds.tick = px.play_pos(0)[1]
-            # px.stop()
+            Sounds.tick = px.play_pos(0)[1] if px.play_pos(0) else 0
+            Sounds.next_music = None
             for ch in [0, 1, 2, 3]:
                 px.play(ch, 63, loop=False)
         else:
