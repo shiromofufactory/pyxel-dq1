@@ -95,10 +95,12 @@ class App:
         # マップ切り替え
         if not self.visible:
             return self.change_map()
-        # オートモード設定/解除（戦闘）
-        if btn["w"] and Battle.on and Battle.state == 1:
-            Battle.auto = not Battle.auto
-            self.battle_switch_auto()
+        # オートモード設定/解除（戦闘中）
+        if btn["w"] and Battle.on:
+            if "auto_settings" in self.windows:
+                self.close_auto_settings()
+            else:
+                self.open_auto_settings()
         # エフェクトカウンタ更新
         Colors.update(btn["s"] or btn["a"])
         # 効果音/音楽→次の音楽
@@ -182,6 +184,7 @@ class App:
             elif btn["a"]:
                 self.close_win(["personality", "personality_guide"])
                 self.open_name()
+        # つづきから
         elif "save_code" in self.windows:
             win = self.windows["save_code"].update_cursol(btn)
             if win.cur_x == 0 and win.cur_y == 2:
@@ -239,6 +242,24 @@ class App:
                             text += "   もどる おわり"
                         texts.append(text)
                     self.upsert_win("save_code", 9, 4, 20, 8, texts).add_cursol(3, 5)
+        # さくせん
+        elif "auto_settings" in self.windows:
+            win = self.windows["auto_settings"].update_cursol(btn)
+            win.texts = [
+                f" {util.spacing(s['label'],8)}： {s['options'][self.auto_settings[s['key']]]}"
+                for s in master["auto_settings"]
+            ]
+            idx = win.cur_y
+            setting = master["auto_settings"][idx]
+            self.windows["auto_settings_guide"].texts = [
+                f"{setting['label'].strip()}："
+            ] + setting["description"].split("\n")
+            if btn["a"] or btn["s"]:
+                self.close_auto_settings()
+            elif btn["r"]:
+                self.change_auto_settings(idx, 1)
+            elif btn["l"]:
+                self.change_auto_settings(idx, -1)
         # 商品選択ウィンドウ
         elif "shop_items" in self.windows:
             win = self.windows["shop_items"].update_cursol(btn)
@@ -365,24 +386,6 @@ class App:
                 self.use_item(id, idx)
             elif btn["a"]:
                 self.close_win(["items", "item_guide"])
-        # さくせん
-        elif "auto_settings" in self.windows:
-            win = self.windows["auto_settings"].update_cursol(btn)
-            win.texts = [
-                f" {util.spacing(s['label'],8)}： {s['options'][self.auto_settings[s['key']]]}"
-                for s in master["auto_settings"]
-            ]
-            idx = win.cur_y
-            setting = master["auto_settings"][idx]
-            self.windows["auto_settings_guide"].texts = [
-                f"{setting['label']}："
-            ] + setting["description"].split("\n")
-            if btn["s"] or btn["a"]:
-                self.close_win(["auto_settings", "auto_settings_guide"])
-            elif btn["r"]:
-                self.change_auto_settings(idx, 1)
-            elif btn["l"]:
-                self.change_auto_settings(idx, -1)
         # メニュー（戦闘）
         elif "battle" in self.windows:
             win = self.windows["battle"].update_cursol(btn)
@@ -427,8 +430,7 @@ class App:
                     self.open_items()
                 # さくせん
                 elif win.cur_y == 3:
-                    self.upsert_win("auto_settings_guide", 2, 9, 27, 14, [])
-                    self.upsert_win("auto_settings", 4, 3, 25, 8, []).add_cursol(4)
+                    self.open_auto_settings()
                 # きろく
                 elif win.cur_y == 4:
                     self.talk("ぼうけんのせいかを きろくしますか？")
@@ -631,7 +633,8 @@ class App:
             for key in self.windows:
                 self.windows[key].draw()
         # モンスター
-        Battle.draw_enemy()
+        if not "auto_settings" in self.windows:
+            Battle.draw_enemy()
         # ゆれ
         if self.shaking > 0:
             px.camera(px.rndi(-3, 3), px.rndi(-3, 3))
@@ -1904,6 +1907,18 @@ class App:
             if i <= Grade.learned_spell():
                 texts[1 + i // 5] += util.spacing(spell["name"], 5)
         self.upsert_win("detail_spells", 1, 10, 28, 14, texts)
+
+    # さくせんウィンドウを開く
+    def open_auto_settings(self):
+        self.upsert_win("auto_settings_guide", 2, 9, 27, 14, [])
+        self.upsert_win("auto_settings", 4, 3, 25, 8, []).add_cursol(4)
+
+    # さくせんウィンドウを閉じる
+    def close_auto_settings(self):
+        self.close_win(["auto_settings", "auto_settings_guide"])
+        if Battle.on and Battle.state == 1:
+            Battle.auto = self.auto_settings["default"] == 1
+            self.battle_switch_auto()
 
     # さくせんを変更
     def change_auto_settings(self, idx, dist):

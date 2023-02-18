@@ -9,7 +9,9 @@ master = util.load_json("dq1master")
 class Battle:
     def __init__(self):
         Battle.on = False
+        Battle.auto = False
         Battle.rollout = 0
+        Battle.state = 0
 
     def off():
         Battle.on = False
