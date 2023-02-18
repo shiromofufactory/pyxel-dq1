@@ -1045,6 +1045,12 @@ class App:
                     "＊「まだまだ じゃな。",
                 ]
             )
+        # ラダトームの街
+        elif event == "t17":
+            if self.has_item(const.RT_MARK) or self.equip_item(const.RT_MARK):
+                self.talk("＊「おお それは ロトのしるし…\n  ロトのしるしを そうびすると\n  ねむりのじゅもんに かからないそうだ")
+            else:
+                self.talk("＊「おまえが ロトの ちをひくもの？\n  なにか しょうこが あるのか？")
         # 雨のほこら
         elif event == "c10":
             if self.has_item(const.HARP) or 1 in self.flags:

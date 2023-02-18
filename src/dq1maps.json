@@ -27,7 +27,7 @@
       { "x": 10, "y": 26, "chr": 4, "event": "msg t14" },
       { "x": 28, "y": 28, "chr": 8, "movable": true, "event": "msg t15" },
       { "x": 20, "y": 23, "chr": 10, "event": "msg t16" },
-      { "x": 16, "y": 19, "chr": 4, "movable": true, "event": "msg t17" },
+      { "x": 16, "y": 19, "chr": 4, "movable": true, "event": "t17" },
       { "x": 10, "y": 3, "chr": 7, "movable": true, "event": "msg t18" },
       { "x": 20, "y": 10, "chr": 10, "event": "msg t19" },
       { "x": 3, "y": 26, "chr": 6, "movable": true, "event": "msg t20" },
