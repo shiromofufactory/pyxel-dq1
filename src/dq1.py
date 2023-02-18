@@ -92,6 +92,7 @@ class App:
             print("talk_state:", talk_state)
             print("reserves:", self.reserves)
             print("windows:", list(self.windows.keys()))
+            print("rollout:", Battle.rollout)
         # マップ切り替え
         if not self.visible:
             return self.change_map()

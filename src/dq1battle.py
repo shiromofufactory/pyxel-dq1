@@ -15,6 +15,7 @@ class Battle:
 
     def off():
         Battle.on = False
+        Battle.rollout = 0
 
     def start(enemy_id, is_boss, auto):
         if not Battle.on:
