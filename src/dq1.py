@@ -55,6 +55,7 @@ class App:
         self.player = Actor({"x": 0, "y": 0, "chr": 0, "movable": True})
         self.name = ""  # ないとエラーになる
         self.hp = 1  # ないとエラーになる
+        self.flags = []
         self.save_code = None
         self.prev_code = None
         self.password = None
@@ -85,7 +86,7 @@ class App:
         )
         operable = False  # キャラクタ操作（移動）可能か
         # フレーム数計上
-        if self.logs:
+        if self.logs and not 14 in self.flags:
             self.logs["frames"] += 1
         # デバッグ情報出力
         if btn["q"]:
