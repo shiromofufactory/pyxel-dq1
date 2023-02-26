@@ -1860,6 +1860,7 @@ class App:
                 self.flags.append(6)
             elif id == const.RT_ARMOR:  # ロトのよろい
                 self.flags.append(9)
+            self.set_actors()
             return True
 
     ### 装備関連 ###
