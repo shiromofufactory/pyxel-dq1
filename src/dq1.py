@@ -1216,9 +1216,11 @@ class App:
                 target = Actor({"x": 7, "y": 7, "chr": 1})
                 Actor.actors.append(target)
                 target.move(1, 0, 3)
-            self.reserve("finale_4", target)
+                self.reserve("finale_4", target)
+            else:
+                self.reserve("finale_4")
         elif event == "finale_4":
-            if talk_state > 0 or parm1.steps > 0:
+            if talk_state > 0 or (parm1 and parm1.steps > 0):
                 return
             self.talk(
                 [
@@ -1856,11 +1858,13 @@ class App:
             self.change_item(id)
             if id == const.FLUTE:  # ようせいのふえ
                 self.flags.append(2)
+                self.set_actors()
             elif id == const.RT_MARK:  # ロトのしるし
                 self.flags.append(6)
+                self.set_actors()
             elif id == const.RT_ARMOR:  # ロトのよろい
                 self.flags.append(9)
-            self.set_actors()
+                self.set_actors()
             return True
 
     ### 装備関連 ###
