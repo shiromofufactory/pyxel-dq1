@@ -1700,7 +1700,7 @@ class App:
             texts = ["＊「おうじょのこえが きこえる。"]
             if not Grade.is_max_lv():
                 texts.append(
-                    f"ローラ「あなたが レベルをあげるには\n    あと {Grade.to_lvup()}ポイント\n    けいかんちが ひつようです。"
+                    f"ローラ「あなたが レベルをあげるには\n    あと {Grade.to_lvup()}ポイント\n    けいけんちが ひつようです。"
                 )
             if Actor.cur_map.kind == 0:
                 dist_x = self.player.x - 47
