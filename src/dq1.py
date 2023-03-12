@@ -445,7 +445,7 @@ class App:
         # 移動操作
         elif pl.dx == 0 and pl.dy == 0:
             # オート回復（強制後退の後で発動）
-            if self.cure_suggestion:
+            if self.cure_suggestion and talk_state < 0:
                 suggestion = None
                 hp = self.hp + 6 if self.equip_item(const.RT_ARMOR) else self.hp
                 if hp <= self.max_hp / 2 or hp <= self.max_hp - 30:
@@ -811,10 +811,11 @@ class App:
                 self.close_status()
                 if parm1 == const.DRAGON:
                     self.flags.append(3)
-                elif parm1 == const.GOLEM:
+                elif parm1 == const.GOLEM and self.has_item(const.FLUTE):
                     self.talk("ようせいのふえは おとをたてて\nくずれさった")
                     self.consume_item(const.FLUTE)
                     self.flags.append(7)
+                    self.cure_suggestion = False
                 elif parm1 == const.DEVIL_KNIGHT and parm2:
                     self.flags.append(8)
                 self.set_actors()
@@ -1938,6 +1939,8 @@ class App:
         self.close_win(["auto_settings", "auto_settings_guide"])
         if Battle.on and Battle.state == 1:
             Battle.auto = self.auto_settings["default"] == 1
+            if self.auto_settings["cure"] == 0:
+                self.cure_suggestion = False
             self.battle_switch_auto()
 
     # さくせんを変更

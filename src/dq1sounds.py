@@ -45,7 +45,6 @@ class Sounds:
 
     # BGM再生
     def play(loop=True, tick=None):
-        print("play", Sounds.cur_music)
         for ch, sound in enumerate(Sounds.musics[Sounds.cur_music]):
             if sound is None or ch > 2:
                 continue
