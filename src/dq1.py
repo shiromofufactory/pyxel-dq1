@@ -59,11 +59,20 @@ class App:
         self.save_code = None
         self.prev_code = None
         self.password = None
+        self.btn_ab_reverse = False
         self.open_welcome()
         px.run(self.update, self.draw)
 
     def update(self):
         pl = self.player
+        if self.btn_ab_reverse:
+            btn_a = px.GAMEPAD1_BUTTON_B
+            btn_b = px.GAMEPAD1_BUTTON_A
+            btn_y = px.GAMEPAD1_BUTTON_X
+        else:
+            btn_a = px.GAMEPAD1_BUTTON_A
+            btn_b = px.GAMEPAD1_BUTTON_B
+            btn_y = px.GAMEPAD1_BUTTON_Y
         btn = {
             "u_": px.btn(px.KEY_UP) or px.btn(px.GAMEPAD1_BUTTON_DPAD_UP),
             "d_": px.btn(px.KEY_DOWN) or px.btn(px.GAMEPAD1_BUTTON_DPAD_DOWN),
@@ -73,10 +82,11 @@ class App:
             "d": px.btnp(px.KEY_DOWN, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_DPAD_DOWN),
             "l": px.btnp(px.KEY_LEFT, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_DPAD_LEFT),
             "r": px.btnp(px.KEY_RIGHT, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_DPAD_RIGHT),
-            "s": px.btnp(px.KEY_S, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_A, 6, 6),
-            "a": px.btnp(px.KEY_A, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_B, 6, 6),
-            "w": px.btnp(px.KEY_W, 6, 6) or px.btnp(px.GAMEPAD1_BUTTON_X, 6, 6),
+            "s": px.btnp(px.KEY_S, 6, 6) or px.btnp(btn_a, 6, 6),
+            "a": px.btnp(px.KEY_A, 6, 6) or px.btnp(btn_b, 6, 6),
+            "w": px.btnp(px.KEY_W, 6, 6) or px.btnp(btn_y, 6, 6),
             "q": px.btnp(px.KEY_Q, 6, 6),
+            "AB": px.btnp(btn_a, 6, 6) or px.btnp(btn_b, 6, 6),
         }
         pressed = btn["s"] or btn["a"] or btn["u"] or btn["d"] or btn["r"] or btn["l"]
         talk_state = (
@@ -152,7 +162,7 @@ class App:
                         self.next_talk("あなたの せいかくを きめてください")
                         texts = [f" {p['name']}" for p in master["personalities"]]
                         self.upsert_win("personality_guide", 15, 0, 26, 5, [])
-                        self.upsert_win("personality", 3, 0, 12, 5, texts).add_cursol()
+                        self.upsert_win("personality", 3, 0, 13, 5, texts).add_cursol()
                 else:
                     letter = const.NAME_TEXTS[win.cur_y][win.cur_x]
                     if len(parm) < 4:
@@ -231,8 +241,18 @@ class App:
         # ウェルカム画面（はじめから／つづきから）
         elif "welcome" in self.windows:
             win = self.windows["welcome"].update_cursol(btn)
-            if btn["s"]:
-                if win.cur_y == 0:
+            if btn["s"] or btn["AB"]:
+                self.btn_ab_reverse = px.btn(px.GAMEPAD1_BUTTON_B)
+                if win.cur_y == 2:
+                    if btn["AB"]:
+                        self.next_talk(
+                            "じゅうじキー：いどう\nAボタン：けってい Bボタン：キャンセル\nYボタン：オートモードせってい  です。"
+                        )
+                    else:
+                        self.next_talk(
+                            "じゅうじキー：いどう\nSキー：けってい  Aキー：キャンセル\nWキー：オートモードせってい  です。"
+                        )
+                elif win.cur_y == 0:
                     self.open_name()
                 else:
                     texts = []
@@ -2108,8 +2128,10 @@ class App:
 
     # ウェルカム画面オープン
     def open_welcome(self):
-        self.talk("ぴくせるばん ドラゴンクエスト1へ\nようこそ！\n")
-        win = self.upsert_win("welcome", 4, 0, 11, 3, [" はじめから", "　つづきから"]).add_cursol()
+        self.talk("ぴくせるばん ドラゴンクエスト1へ\nようこそ！\nSキー　または Aボタン で けってい)")
+        win = self.upsert_win(
+            "welcome", 4, 0, 13, 4, ["　はじめから", "　つづきから", "　そうさせつめい"]
+        ).add_cursol()
         win.kind = []  # セーブコード入力用
         win.parm = []  # なまえ入力用
         Sounds.bgm("dq1town")
