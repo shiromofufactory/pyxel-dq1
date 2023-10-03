@@ -775,11 +775,12 @@ class App:
                 self.close_status()
                 if parm1 == const.DRAGON:
                     self.flags.append(3)
-                elif parm1 == const.GOLEM and self.has_item(const.FLUTE):
-                    self.talk("ようせいのふえは おとをたてて\nくずれさった")
-                    self.consume_item(const.FLUTE)
+                elif parm1 == const.GOLEM:
+                    if self.has_item(const.FLUTE):
+                        self.talk("ようせいのふえは おとをたてて\nくずれさった")
+                        self.consume_item(const.FLUTE)
+                        self.cure_suggestion = False
                     self.flags.append(7)
-                    self.cure_suggestion = False
                 elif parm1 == const.DEVIL_KNIGHT and parm2:
                     self.flags.append(8)
                 self.set_actors()
@@ -1214,7 +1215,7 @@ class App:
             self.reserve("finale_8")
         elif event == "finale_8":
             self.is_ending = True
-            self.talk(f"さいごまで プレイしてくれて\nありがとう！")
+            self.talk(f"さいごまで プレイしてくれて\nありがとう！\n")
             self.reserve("finale_9")
         elif event == "finale_9":
             if talk_state > 0:
