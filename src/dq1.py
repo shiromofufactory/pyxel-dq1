@@ -12,7 +12,7 @@ from dq1battle import Battle
 from dq1grade import Grade
 from dq1map import Map
 from dq1window import Window
-from dq1http import Http
+from dq1user import User
 
 
 master = util.load_json("dq1master")
@@ -56,9 +56,6 @@ class App:
         self.name = ""  # ないとエラーになる
         self.hp = 1  # ないとエラーになる
         self.flags = []
-        self.save_code = None
-        self.prev_code = None
-        self.password = None
         self.btn_ab_reverse = False
         self.open_welcome()
         px.run(self.update, self.draw)
@@ -131,8 +128,6 @@ class App:
                 answer = btn["s"] and win.cur_y == 0
                 self.reserve(win.kind, answer, win.parm)
                 self.close_win("yn")
-                if win.kind == "save" and answer:
-                    Sounds.pause(True)
         # ウェルカム画面（名前）
         elif "name" in self.windows:
             win = self.windows["name"].update_cursol(btn)
@@ -196,48 +191,6 @@ class App:
             elif btn["a"]:
                 self.close_win(["personality", "personality_guide"])
                 self.open_name()
-        # つづきから
-        elif "save_code" in self.windows:
-            win = self.windows["save_code"].update_cursol(btn)
-            if win.cur_x == 0 and win.cur_y == 2:
-                win.cur_x += 3 if btn["l"] else 1
-            if win.cur_x == 2 and win.cur_y == 2:
-                win.cur_x += 1 if btn["r"] else -1
-            if win.cur_x == 4 and win.cur_y == 2:
-                win.cur_x -= 3 if btn["r"] else 1
-            disp_code = ""
-            code = ""
-            parm = self.windows["welcome"].kind
-            idx = len(parm) if len(parm) < 6 else 5
-            for i in range(6):
-                if len(parm) > i:
-                    code += parm[i]
-                    disp_code += parm[i]
-                else:
-                    disp_code += " " if i == idx and px.frame_count % 20 < 10 else "＊"
-            self.next_talk(f"セーブコードを いれてください\n{disp_code}")
-            is_delete = False
-            if btn["s"]:
-                if win.cur_x == 1 and win.cur_y == 2:
-                    is_delete = True
-                elif win.cur_x == 3 and win.cur_y == 2:
-                    if len(code) >= 6:
-                        self.prev_code = code
-                        Sounds.pause(True)
-                        self.reserve("load")
-                else:
-                    letter = const.SAVE_CODES[win.cur_y][win.cur_x]
-                    if len(parm) < 6:
-                        parm.append(letter)
-                    if idx >= 5:
-                        win.cur_x = 3
-                        win.cur_y = 2
-            if btn["a"] or is_delete:
-                if idx > 0:
-                    parm.pop(-1)
-                elif btn["a"]:
-                    self.close_win("save_code")
-                    self.open_welcome()
         # ウェルカム画面（はじめから／つづきから）
         elif "welcome" in self.windows:
             win = self.windows["welcome"].update_cursol(btn)
@@ -255,15 +208,7 @@ class App:
                 elif win.cur_y == 0:
                     self.open_name()
                 else:
-                    texts = []
-                    for (idx, line) in enumerate(const.SAVE_CODES):
-                        text = ""
-                        for letter in line:
-                            text += f" {letter}"
-                        if idx == 2:
-                            text += "   もどる おわり"
-                        texts.append(text)
-                    self.upsert_win("save_code", 9, 4, 20, 8, texts).add_cursol(3, 5)
+                    self.reserve("load")
         # さくせん
         elif "auto_settings" in self.windows:
             win = self.windows["auto_settings"].update_cursol(btn)
@@ -747,9 +692,8 @@ class App:
                 self.close_win()
                 self.set_map(map_name, pl.x, pl.y)
             else:
-                self.close_win("save_code")
                 self.windows["welcome"].kind = []
-                self.next_talk("セーブコードが まちがっています")
+                self.next_talk("セーブデータが ありません")
         elif event == "dead":  # 死亡
             Battle.off()
             self.reset_game()
@@ -893,10 +837,8 @@ class App:
             self.consume_item(const.RAINBOW_DROP)
         elif event == "save":  # セーブ
             if parm1:
-                (self.save_code, self.password) = self.save_data()
-                self.talk(
-                    f"セーブコードは {self.save_code} です。\nかならず メモをとるか\nスクリーンショットを とってください。"
-                )
+                self.save_data()
+                self.talk("きろくしました。")
             else:
                 self.close_talk()
         elif event == "deport":  # 強制退去
@@ -1208,8 +1150,7 @@ class App:
             self.wait = 20
             self.flags.append(14)
             self.close_win()
-            Sounds.pause(True)
-            (self.save_code, self.password) = self.save_data(False)
+            self.save_data()
             self.reserve("finale_1b")
         elif event == "finale_1b":
             self.set_map("catsle1-4", 18, 56, 4)
@@ -1273,7 +1214,7 @@ class App:
             self.reserve("finale_8")
         elif event == "finale_8":
             self.is_ending = True
-            self.talk(f"さいごまで プレイしてくれて\nありがとう！\nセーブコード：{self.save_code}")
+            self.talk(f"さいごまで プレイしてくれて\nありがとう！")
             self.reserve("finale_9")
         elif event == "finale_9":
             if talk_state > 0:
@@ -1331,7 +1272,7 @@ class App:
         self.reserve("opening" if is_opening else "reset")
 
     # セーブ
-    def save_data(self, play=True):
+    def save_data(self):
         pl = self.player
         data = {
             "map": Actor.cur_map.name if Actor.cur_map else None,
@@ -1358,18 +1299,14 @@ class App:
             "flags": self.flags,
             "auto_settings": self.auto_settings,
             "logs": self.logs,
-            "prev_code": self.prev_code,
             "updated": str(datetime.datetime.utcnow() + datetime.timedelta(hours=9)),
         }
-        (save_code, password) = Http.set(self.save_code, self.password, data)
-        if play:
-            Sounds.pause(False)
-        return (save_code, password)
+        User.save(data)
+        return
 
     # ロード
     def load_data(self):
-        data = Http.get(self.prev_code)
-        Sounds.pause(False)
+        data = User.load()
         if not data:
             return None
         pl = self.player
@@ -2139,7 +2076,7 @@ class App:
     # 名前ウィンドウオープン
     def open_name(self):
         texts = []
-        for (idx, line) in enumerate(const.NAME_TEXTS):
+        for idx, line in enumerate(const.NAME_TEXTS):
             text = ""
             for letter in line:
                 text += f" {letter}"
