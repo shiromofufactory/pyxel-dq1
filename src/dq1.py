@@ -227,6 +227,31 @@ class App:
                 self.change_auto_settings(idx, 1)
             elif btn["l"]:
                 self.change_auto_settings(idx, -1)
+        # ずかん
+        elif "book" in self.windows:
+            id = self.windows["book"].parm
+            dist = 0
+            if btn["u"] or btn["l"]:
+                dist -= 1
+            if btn["d"] or btn["r"]:
+                dist += 1
+            while True:
+                id = (id + dist + 39) % 39
+                if id in self.books:
+                    break
+            if self.windows["book"].parm != id:
+                self.open_book(id)
+            if btn["s"] or btn["a"]:
+                self.close_win("book")
+                self.open_books(id)
+        elif "books" in self.windows:
+            win = self.windows["books"]
+            win.update_cursol(btn)
+            id = win.cur_x * 13 + win.cur_y
+            if btn["s"] and id in self.books:
+                self.open_book(id)
+            elif btn["a"]:
+                self.close_win("books")
         # 商品選択ウィンドウ
         elif "shop_items" in self.windows:
             win = self.windows["shop_items"].update_cursol(btn)
@@ -386,20 +411,24 @@ class App:
                 self.close_win("menu")
             elif btn["s"]:
                 # つよさ
-                if win.cur_y == 0:
+                idx = win.cur_y * 2 + win.cur_x
+                if idx == 0:
                     self.show_property()
                     self.open_detail()
                 # じゅもん
-                elif win.cur_y == 1:
+                elif idx == 1:
                     self.open_spells()
                 # どうぐ
-                elif win.cur_y == 2:
+                elif idx == 2:
                     self.open_items()
                 # さくせん
-                elif win.cur_y == 3:
+                elif idx == 3:
                     self.open_auto_settings()
+                # ずかん
+                elif idx == 4:
+                    self.open_books()
                 # きろく
-                elif win.cur_y == 4:
+                elif idx == 5:
                     self.talk("ぼうけんのせいかを きろくしますか？")
                     self.reserve("yn", "save")
         # 城から強制退去
@@ -435,9 +464,8 @@ class App:
                 operable = True
                 if btn["s"]:  # メニューを開く
                     self.show_status()
-                    self.upsert_win(
-                        "menu", 20, 0, 26, 6, [" つよさ", " じゅもん", " どうぐ", " さくせん", " きろく"]
-                    ).add_cursol()
+                    texts = [" つよさ  じゅもん", " どうぐ  さくせん", " ずかん  きろく"]
+                    self.upsert_win("menu", 16, 0, 27, 4, texts).add_cursol(3, 2, 5)
                 elif not "status" in self.windows:
                     self.status_timer += 1
                     if self.status_timer >= 30:
@@ -598,7 +626,21 @@ class App:
         # 各種ウィンドウ
         if Battle.rollout <= 1:
             for key in self.windows:
-                self.windows[key].draw()
+                win = self.windows[key]
+                win.draw()
+                # モンスター（ずかん用特殊処理）
+                if key == "book":
+                    enemy = master["enemies"][win.parm]
+                    px.blt(
+                        win.x1 * 8 + 144 - enemy["width"] / 2,
+                        win.y1 * 8 + 80 - enemy["height"],
+                        enemy["img_no"],
+                        enemy["img_x"],
+                        enemy["img_y"],
+                        enemy["width"],
+                        enemy["height"],
+                        0,
+                    )
         # モンスター
         if not "auto_settings" in self.windows:
             Battle.draw_enemy()
@@ -717,6 +759,7 @@ class App:
                 self.auto_settings = {"default": 0, "escape": 0, "spell": 1, "cure": 0}
                 self.opened = []  # 開けた宝箱
                 self.flags = [5, 13]  # イベントフラグ
+                self.books = []
                 self.set_encount()
                 self.reset_game(True)
                 self.close_win()
@@ -1300,6 +1343,7 @@ class App:
             "flags": self.flags,
             "auto_settings": self.auto_settings,
             "logs": self.logs,
+            "books": self.books,
             "updated": str(datetime.datetime.utcnow() + datetime.timedelta(hours=9)),
         }
         User.save(data)
@@ -1333,6 +1377,7 @@ class App:
         self.auto_settings = data["auto_settings"]
         self.logs = data["logs"]
         self.logs["loaded"] += 1
+        self.books = data["books"] if "books" in data else []
         if 14 in self.flags:  # エンディング後再開
             self.flags.remove(14)
             pl.x = 47
@@ -1908,6 +1953,42 @@ class App:
         ats = self.auto_settings
         ats[setting["key"]] = (ats[setting["key"]] + dist + length) % length
 
+    # ずかんウィンドウ（一覧）を開く
+    def open_books(self, id=0):
+        texts = ["" for _ in range(13)]
+        for enemy in master["enemies"]:
+            idx = enemy["id"]
+            if idx < 39:
+                y = idx % 13
+                text = enemy["name"] if idx in self.books else ""
+                texts[y] += f" {util.spacing(text,7)}"
+        win = self.upsert_win("books", 2, 0, 27, 14, texts).add_cursol(13, 3, 8)
+        win.cur_y = id % 13
+        win.cur_x = id // 13
+
+    # ずかんウィンドウ（個別）を開く
+    def open_book(self, enemy_id):
+        enemy = master["enemies"][enemy_id]
+        texts = [
+            enemy["name"],
+            "",
+            f"さいだいHP：{util.padding(enemy['hp'],3)}",
+            f"さいだいMP：{util.padding(enemy['mp'],3)}",
+            f"こうげきカ ：{util.padding(enemy['atc'],3)}",
+            f"しゅびカ  ：{util.padding(enemy['dfc'],3)}   けいけんち ：{util.padding(enemy['exp'],4)}",
+            f"すばやさ  ：{util.padding(enemy['speed'],3)}   ゴールド  ：{util.padding(enemy['gold'],4)}",
+            "",
+            "かいひりつ ：",
+            f" だげき      {util.padding(enemy['avoid'],2)}/32",
+        ]
+        if Grade.learned_spell() >= 1:
+            texts.append(f" こうげきじゅもん {util.padding(enemy['avoid_dmg'],2)}/32")
+        if Grade.learned_spell() >= 2:
+            texts.append(f" ラリホー     {util.padding(enemy['avoid_sleep'],2)}/32")
+        if Grade.learned_spell() >= 4:
+            texts.append(f" マホトーン    {util.padding(enemy['avoid_seal'],2)}/32")
+        self.upsert_win("book", 2, 0, 27, 14, texts).parm = enemy_id
+
     ### ショップ関連 ###
 
     # ショップウィンドウウープン（売買）
@@ -2262,6 +2343,11 @@ class App:
                 self.battle_myturn()
         elif Battle.state == 2:
             self.logs["win"] += 1
+            exp_get = en["exp"]  # // 2
+            if not en["id"] in self.books:
+                self.books.append(en["id"])
+                self.talk(f"{en['name']}を はじめて やっつけた！")
+                # exp_get *= 4
             if en["id"] == const.DRAGON_LOAD:  # りゅうおう連戦
                 return self.start_battle(const.DRAGON_KING, True)
             elif en["id"] == const.DRAGON_KING:
@@ -2269,8 +2355,8 @@ class App:
                 self.recover_full()
                 return self.reserve("finale")
             if en["exp"] > 0:
-                self.talk(f"けいけんち {en['exp']}ポイントかくとく\n{en['gold']}ゴールドを てにいれた！")
-                Grade.exp = min(Grade.exp + en["exp"], 65535)
+                self.talk(f"けいけんち {exp_get}ポイントかくとく\n{en['gold']}ゴールドを てにいれた！")
+                Grade.exp = min(Grade.exp + exp_get, 65535)
                 self.add_gold(en["gold"])
             self.judge_lvup()
         elif Battle.state == 3:

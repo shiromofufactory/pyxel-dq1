@@ -13,6 +13,7 @@ class Window:
         self.y2 = y2
         self.has_cur = False
         self.cur_x = None
+        self.cur_itv = 2
         self.cur_y = None
         self.cur_fix = False
         self.texts = [texts] if type(texts) is str else texts
@@ -27,10 +28,11 @@ class Window:
         self.parm = None
         self.kind = None
 
-    def add_cursol(self, h=None, w=1):
+    def add_cursol(self, h=None, w=1, interval=2):
         self.cur_w = w
         self.cur_h = len(self.texts) if h is None else h
         self.cur_x = 0
+        self.cur_itv = interval
         if self.cur_y is None:
             self.cur_y = 0
         if self.cur_x is None:
@@ -155,7 +157,7 @@ class Window:
         if self.has_cur:
             fixed = self.cur_fix or not self.start_cur
             if fixed or self.flash < 10:
-                draw_text(x1 + self.cur_x * 2 + 1, y1 + self.cur_y + 1, "→")
+                draw_text(x1 + self.cur_x * self.cur_itv + 1, y1 + self.cur_y + 1, "→")
             if not fixed:
                 self.flash = (self.flash + 1) % 20
 
