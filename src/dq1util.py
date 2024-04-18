@@ -1,5 +1,8 @@
 import pyxel as px
 import json
+import os
+
+current_path = os.path.dirname(__file__)
 
 
 # 「ピッ」音
@@ -9,9 +12,19 @@ def beep():
 
 
 # JSONロード
-def load_json(file):
-    with open("./" + file + ".json", "r") as fin:
+def load_json(file, path=current_path):
+    fullPath = path + "/" + file + ".json"
+    # print("loading:", fullPath)
+    with open(fullPath, "r") as fin:
         return json.loads(fin.read())
+
+
+# JSONセーブ
+def save_json(file, data, path=current_path):
+    fullPath = path + "/" + file + ".json"
+    # print("saved to", fullPath)
+    with open(fullPath, "w") as fout:
+        fout.write(data)
 
 
 # パディング右よせ

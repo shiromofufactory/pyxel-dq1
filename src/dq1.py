@@ -23,7 +23,7 @@ jumps = util.load_json("dq1jumps")
 
 class App:
     def __init__(self):
-        px.init(240, 240, title="Dragon Quest 1 for Pyxel")
+        px.init(240, 240, title="Dragon Quest 1 Pyxelized ")
         px.load("dq1.pyxres")
         # px.image(0).save("images/image0.png", 1)
         # px.image(1).save("images/image1.png", 1)
@@ -37,6 +37,7 @@ class App:
         self.next_y = None
         self.reserves = []
         self.wait = 0
+        self.btn_reset_timer = 0
         Battle()
         Fade()
         Colors()
@@ -66,10 +67,12 @@ class App:
             btn_a = px.GAMEPAD1_BUTTON_B
             btn_b = px.GAMEPAD1_BUTTON_A
             btn_y = px.GAMEPAD1_BUTTON_X
+            btn_x = px.GAMEPAD1_BUTTON_Y
         else:
             btn_a = px.GAMEPAD1_BUTTON_A
             btn_b = px.GAMEPAD1_BUTTON_B
             btn_y = px.GAMEPAD1_BUTTON_Y
+            btn_x = px.GAMEPAD1_BUTTON_X
         btn = {
             "u_": px.btn(px.KEY_UP) or px.btn(px.GAMEPAD1_BUTTON_DPAD_UP),
             "d_": px.btn(px.KEY_DOWN) or px.btn(px.GAMEPAD1_BUTTON_DPAD_DOWN),
@@ -82,9 +85,14 @@ class App:
             "s": px.btnp(px.KEY_S, 6, 6) or px.btnp(btn_a, 6, 6),
             "a": px.btnp(px.KEY_A, 6, 6) or px.btnp(btn_b, 6, 6),
             "w": px.btnp(px.KEY_W, 6, 6) or px.btnp(btn_y, 6, 6),
-            "q": px.btnp(px.KEY_Q, 6, 6),
+            "q_": px.btn(px.KEY_Q) or px.btn(btn_x),
             "AB": px.btnp(btn_a, 6, 6) or px.btnp(btn_b, 6, 6),
         }
+        pressed = btn["s"] or btn["a"] or btn["w"]
+        if btn["q_"]:
+            self.btn_reset_timer += 1
+            if self.btn_reset_timer >= 60:
+                px.quit()
         pressed = btn["s"] or btn["a"] or btn["u"] or btn["d"] or btn["r"] or btn["l"]
         talk_state = (
             self.windows["talk"].talk_state
@@ -95,12 +103,6 @@ class App:
         # フレーム数計上
         if self.logs and not 14 in self.flags:
             self.logs["frames"] += 1
-        # デバッグ情報出力
-        if btn["q"]:
-            print("talk_state:", talk_state)
-            print("reserves:", self.reserves)
-            print("windows:", list(self.windows.keys()))
-            print("rollout:", Battle.rollout)
         # マップ切り替え
         if not self.visible:
             return self.change_map()
@@ -186,7 +188,9 @@ class App:
                 self.power = personality["power"]
                 self.speed = personality["speed"]
                 self.close_win(["welcome", "personality", "personality_guide"])
-                self.next_talk(f"なまえ： %\nせいかく： {pname}\n\nこれで よろしいですか？", True)
+                self.next_talk(
+                    f"なまえ： %\nせいかく： {pname}\n\nこれで よろしいですか？", True
+                )
                 self.open_yn("make_player", idx)
             elif btn["a"]:
                 self.close_win(["personality", "personality_guide"])
@@ -199,11 +203,11 @@ class App:
                 if win.cur_y == 2:
                     if btn["AB"]:
                         self.next_talk(
-                            "じゅうじキー：いどう\nAボタン：けってい Bボタン：キャンセル\nYボタン：オートモードせってい  です。"
+                            "じゅうじキー：いどう\nAボタン：けってい Bボタン：キャンセル\nYボタン：オートモードせってい です。"
                         )
                     else:
                         self.next_talk(
-                            "じゅうじキー：いどう\nSキー：けってい  Aキー：キャンセル\nWキー：オートモードせってい  です。"
+                            "じゅうじキー：いどう\nSキー：けってい  Aキー：キャンセル\nWキー：オートモードせってい です。"
                         )
                 elif win.cur_y == 0:
                     self.open_name()
@@ -296,7 +300,9 @@ class App:
                     if kind == "weapon":
                         self.talk(f"＊「どうも。 ほかにも うるかね？")
                     else:
-                        self.talk(f"＊「まいど ありがとうございます。\n  ほかにも おうりですか？")
+                        self.talk(
+                            f"＊「まいど ありがとうございます。\n  ほかにも おうりですか？"
+                        )
                     self.open_shop_sell(kind, win.parm)
                 else:
                     self.shop_other(kind, win.parm, True)
@@ -464,7 +470,11 @@ class App:
                 operable = True
                 if btn["s"]:  # メニューを開く
                     self.show_status()
-                    texts = [" つよさ  じゅもん", " どうぐ  さくせん", " ずかん  きろく"]
+                    texts = [
+                        " つよさ  じゅもん",
+                        " どうぐ  さくせん",
+                        " ずかん  きろく",
+                    ]
                     self.upsert_win("menu", 16, 0, 27, 4, texts).add_cursol(3, 2, 5)
                 elif not "status" in self.windows:
                     self.status_timer += 1
@@ -680,15 +690,21 @@ class App:
                 self.reserve("shop", "weapon", util.list_str2int(parm.split(",")))
             elif type == "tool":
                 self.show_property()
-                self.talk(f"＊「いらっしゃいませ。\n  ここは どうぐや です。\n  どんな ごようでしょうか？")
+                self.talk(
+                    f"＊「いらっしゃいませ。\n  ここは どうぐや です。\n  どんな ごようでしょうか？"
+                )
                 self.reserve("shop", "tool", util.list_str2int(parm.split(",")))
             elif type == "lock":
                 self.show_property()
-                self.talk(f"＊「どんなとびらも あけてしまう\n  まほうの かぎは いらんかな？\n  ひとつ {parm}ゴールド じゃ。")
+                self.talk(
+                    f"＊「どんなとびらも あけてしまう\n  まほうの かぎは いらんかな？\n  ひとつ {parm}ゴールド じゃ。"
+                )
                 self.reserve("yn", "shop_lock", int(parm))
             elif type == "water":
                 self.show_property()
-                self.talk(f"＊「まものよけの せいすいは\n  いかがですか？\n  ひとつ {parm}ゴールド です。")
+                self.talk(
+                    f"＊「まものよけの せいすいは\n  いかがですか？\n  ひとつ {parm}ゴールド です。"
+                )
                 self.reserve("yn", "shop_water", int(parm))
             elif type == "find":
                 id = int(parm)
@@ -906,7 +922,9 @@ class App:
             parm1.move(parm2, parm3)
         elif event == "inn_open":  # 宿屋
             self.show_property()
-            self.talk(f"＊「たびびとのやどやへ ようこそ。\n  ひとばん {parm1}ゴールドですが\n  おとまりに なりますか？")
+            self.talk(
+                f"＊「たびびとのやどやへ ようこそ。\n  ひとばん {parm1}ゴールドですが\n  おとまりに なりますか？"
+            )
             if self.gold >= parm1:
                 self.reserve("yn", "inn_yn", parm1)
             else:
@@ -924,7 +942,9 @@ class App:
                     Fade.start(True)
                     self.reserve("inn_done")
             else:
-                self.talk("＊「さようなら たびのひと。\n  あまり むりを なさいませぬように。")
+                self.talk(
+                    "＊「さようなら たびのひと。\n  あまり むりを なさいませぬように。"
+                )
         elif event == "inn_princess":
             if talk_state > 0:
                 return
@@ -970,7 +990,9 @@ class App:
                 self.talk("＊「のろいをといて しんぜよう。")
                 self.reserve("t22_2")
             else:
-                self.talk("＊「もし そなたが のろわれたなら\n  ここに くるがよい。\n  きっと ちからになってやるぞ。")
+                self.talk(
+                    "＊「もし そなたが のろわれたなら\n  ここに くるがよい。\n  きっと ちからになってやるぞ。"
+                )
         elif event == "t22_2":
             if talk_state > 0:
                 return
@@ -982,13 +1004,19 @@ class App:
         # リムルダール
         elif event == "t47":
             if self.equip_item(const.FIGHTER_RING):
-                self.talk("＊「おまえがつけている ゆびわには\n  かいしんのいちげきを\n  でやすくする ちからがあるぜ。")
+                self.talk(
+                    "＊「おまえがつけている ゆびわには\n  かいしんのいちげきを\n  でやすくする ちからがあるぜ。"
+                )
             else:
-                self.talk("＊「せんしも ゆびわくらいは\n  みにつけなくては。 それも\n  たしなみの ひとつだからな。")
+                self.talk(
+                    "＊「せんしも ゆびわくらいは\n  みにつけなくては。 それも\n  たしなみの ひとつだからな。"
+                )
         # メルキド
         elif event == "t57":
             cnt = len([i for i in self.opened if i < 30])
-            self.talk(f"＊「このせかいには そなたが まだ\n  あけていない たからのはこが\n  あと {25-cnt}こ あるはずじゃ。")
+            self.talk(
+                f"＊「このせかいには そなたが まだ\n  あけていない たからのはこが\n  あと {25-cnt}こ あるはずじゃ。"
+            )
         # ラダトーム城
         elif event == "c21":
             if self.with_princess:
@@ -1003,9 +1031,7 @@ class App:
                 )
                 self.reserve("c21_2")
             else:
-                lvup_text = (
-                    f"＊「そなたが つぎのレベルになるには\n  あと {Grade.to_lvup()}ポイントの\n  けいけんが ひつようじゃ"
-                )
+                lvup_text = f"＊「そなたが つぎのレベルになるには\n  あと {Grade.to_lvup()}ポイントの\n  けいけんが ひつようじゃ"
                 if Grade.is_max_lv():
                     lvup_text = "そなたは もう\n  じゅうぶんに つよい！ なぜに \n  まだ りゅうおうを たおせぬのか？"
                 self.talk(
@@ -1038,11 +1064,15 @@ class App:
             self.talk(texts)
         elif event == "c28":
             if 4 in self.flags:
-                self.talk("＊「ああ %さま！\n  ひめさまを たすけてくださって\n  ありがとうございます！")
+                self.talk(
+                    "＊「ああ %さま！\n  ひめさまを たすけてくださって\n  ありがとうございます！"
+                )
             else:
                 self.talk("＊「ああ ローラひめは\n  いったい どこに…")
         elif event == "c33":
-            self.talk("＊「おお カミよ！\n  ふるい いいつたえの ゆうしゃ\n  %に ひかり あれ！")
+            self.talk(
+                "＊「おお カミよ！\n  ふるい いいつたえの ゆうしゃ\n  %に ひかり あれ！"
+            )
             self.reserve("recover_mp")
         elif event == "c38":
             logs = self.logs
@@ -1056,9 +1086,13 @@ class App:
         # ラダトームの街
         elif event == "t17":
             if self.has_item(const.RT_MARK) or self.equip_item(const.RT_MARK):
-                self.talk("＊「おお それは ロトのしるし…\n  ロトのしるしを そうびすると\n  ねむりのじゅもんに かからないそうだ")
+                self.talk(
+                    "＊「おお それは ロトのしるし…\n  ロトのしるしを そうびすると\n  ねむりのじゅもんに かからないそうだ"
+                )
             else:
-                self.talk("＊「おまえが ロトの ちをひくもの？\n  なにか しょうこが あるのか？")
+                self.talk(
+                    "＊「おまえが ロトの ちをひくもの？\n  なにか しょうこが あるのか？"
+                )
         # 雨のほこら
         elif event == "c10":
             if self.has_item(const.HARP) or 1 in self.flags:
@@ -1101,11 +1135,16 @@ class App:
                     self.reserve("c12_2")
                 else:
                     self.talk(
-                        ["＊「あめと たいようが あわさるとき\n  にじのはしが できる。\n  ゆくがよい。 そして さがすがよい。"]
+                        [
+                            "＊「あめと たいようが あわさるとき\n  にじのはしが できる。\n  ゆくがよい。 そして さがすがよい。"
+                        ]
                     )
             else:
                 self.talk(
-                    ["＊「そなたが ロトのちをひく\n  まことの ゆうしゃなら\n  しるしが あるはず", "＊「おろかものよ たちされい！"]
+                    [
+                        "＊「そなたが ロトのちをひく\n  まことの ゆうしゃなら\n  しるしが あるはず",
+                        "＊「おろかものよ たちされい！",
+                    ]
                 )
                 self.reserve("deport")
         elif event == "c12_2":
@@ -1581,7 +1620,10 @@ class App:
     def update_spells_guide(self):
         win = self.windows["spells"]
         spell = gm.spell(win.cur_ids[win.cur_y])
-        self.windows["spells_guide"].texts = [f"しょうひMP {spell['mp']}", spell["guide"]]
+        self.windows["spells_guide"].texts = [
+            f"しょうひMP {spell['mp']}",
+            spell["guide"],
+        ]
         return spell["id"]
 
     # じゅもん使用
@@ -1855,7 +1897,9 @@ class App:
     # アイテムを追加
     def add_item(self, id):
         if len(self.items) >= 8:
-            self.talk("しかし もちものがいっぱいで\nこれいじょう もてない。\nもちものを すてますか？")
+            self.talk(
+                "しかし もちものがいっぱいで\nこれいじょう もてない。\nもちものを すてますか？"
+            )
             self.reserve("yn", "abandon_yn")
             return False
         else:
@@ -1883,7 +1927,9 @@ class App:
         self.equips[pos] = id
         if self.is_curse(pos):
             item = gm.item(id)
-            self.talk(f"{item['name']} には\nのろいが かかっていた！\n%は のろわれてしまった！")
+            self.talk(
+                f"{item['name']} には\nのろいが かかっていた！\n%は のろわれてしまった！"
+            )
             self.show_status()
             Sounds.wait("dq1curse")
         return True
@@ -2048,7 +2094,9 @@ class App:
             if kind == "weapon":
                 self.talk(f"＊「どうも ありがとう。\n  ほかに ようは あるかね？")
             elif kind == "tool":
-                self.talk(f"＊「まいど ありがとうございます。\n  ほかに ごようは ありますか？")
+                self.talk(
+                    f"＊「まいど ありがとうございます。\n  ほかに ごようは ありますか？"
+                )
         else:
             if kind == "weapon":
                 self.talk("＊「ほかに ようは あるかね？")
@@ -2147,7 +2195,9 @@ class App:
 
     # ウェルカム画面オープン
     def open_welcome(self):
-        self.talk("ぴくせるばん ドラゴンクエスト1へ\nようこそ！\nSキー　または Aボタン で けってい)")
+        self.talk(
+            "ぴくせるばん ドラゴンクエスト1へ\nようこそ！\nSキー　または Aボタン で けってい)"
+        )
         win = self.upsert_win(
             "welcome", 4, 0, 13, 4, ["　はじめから", "　つづきから", "　そうさせつめい"]
         ).add_cursol()
@@ -2273,7 +2323,12 @@ class App:
                         return self.think_player()
                     else:
                         win = self.upsert_win(
-                            "battle", 20, 0, 26, 5, [" たたかう", " じゅもん", " どうぐ", " にげる"]
+                            "battle",
+                            20,
+                            0,
+                            26,
+                            5,
+                            [" たたかう", " じゅもん", " どうぐ", " にげる"],
                         )
                         win.add_cursol()
                         return
@@ -2355,7 +2410,9 @@ class App:
                 self.recover_full()
                 return self.reserve("finale")
             if en["exp"] > 0:
-                self.talk(f"けいけんち {exp_get}ポイントかくとく\n{en['gold']}ゴールドを てにいれた！")
+                self.talk(
+                    f"けいけんち {exp_get}ポイントかくとく\n{en['gold']}ゴールドを てにいれた！"
+                )
                 Grade.exp = min(Grade.exp + exp_get, 65535)
                 self.add_gold(en["gold"])
             self.judge_lvup()
@@ -2552,7 +2609,9 @@ class App:
             spell = gm.spell(selected)
             if en["mp"] >= spell["mp"] and not en["sealed"]:
                 Sounds.sound(7)
-                self.next_talk(f"{en['name']}は {spell['name']}の\nじゅもんを となえた！")
+                self.next_talk(
+                    f"{en['name']}は {spell['name']}の\nじゅもんを となえた！"
+                )
                 en["mp"] -= spell["mp"]
                 # print("敵の残MP", en["mp"])
                 action = selected

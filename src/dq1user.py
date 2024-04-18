@@ -2,7 +2,12 @@ LOCAL = False
 try:
     from js import window
 except:
+    import os
+
     LOCAL = True
+    local_path = os.path.expanduser("~/.config/.pyxel/pyxel-dq1")
+    if not os.path.exists(local_path):
+        os.makedirs(local_path)
     print("ローカルモード")
 import json
 import dq1util as util
@@ -13,8 +18,7 @@ class User:
     def save(data):
         try:
             if LOCAL:
-                with open("../local/dq1save.json", "w") as fout:
-                    fout.write(json.dumps(data))
+                util.save_json("save", json.dumps(data), local_path)
             else:
                 window.localStorage.setItem(
                     "pyxel-dq1", json.dumps(data).replace(" ", "")
@@ -28,7 +32,7 @@ class User:
     def load():
         try:
             if LOCAL:
-                return util.load_json("../local/dq1save")
+                return util.load_json("save", local_path)
             else:
                 return json.loads(window.localStorage.getItem("pyxel-dq1"))
         except:

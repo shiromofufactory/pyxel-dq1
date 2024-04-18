@@ -48,7 +48,7 @@ class Sounds:
         for ch, sound in enumerate(Sounds.musics[Sounds.cur_music]):
             if sound is None or ch > 2:
                 continue
-            px.sound(ch).set(
+            px.sounds[ch].set(
                 sound["notes"],
                 sound["tones"],
                 sound["volumes"],
